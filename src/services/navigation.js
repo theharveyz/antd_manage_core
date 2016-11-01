@@ -14,10 +14,12 @@ export default class Navigation {
 
   setNavigationConfig(navigationConfig) {
     this.navigationConfig = navigationConfig;
+    return this;
   }
 
   setLoadComponentCallback(callback) {
     this.loadComponentCallback = callback;
+    return this;
   }
 
   getConfigs() {
