@@ -1,14 +1,14 @@
 import React from 'react';
-import { DI } from 'core';
+import DI from '../../di';
 import styles from './permission.styl';
 
 export default class Permission extends React.Component {
   static propTypes = {
     needPermission: React.PropTypes.array,
     children: React.PropTypes.node.isRequired
-  }
+  };
 
-  state = { showChildren: false }
+  state = { showChildren: false };
 
   componentWillMount() {
     DI.get('permission')
@@ -22,8 +22,8 @@ export default class Permission extends React.Component {
     let children = null;
     if (DI.get('config').get('permission.debug')) {
       children = (
-        <div className={styles.debug}>
-          <p className={styles.info}>
+        <div className={styles.debug} >
+          <p className={styles.info} >
             {JSON.stringify(this.props.needPermission)}
           </p>
           {this.props.children}
