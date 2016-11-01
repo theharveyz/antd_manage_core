@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import { matchPattern } from 'react-router/lib/PatternUtils';
-import asyncLoadComponent from '../utils/async-load-component';
 import injectable from '../decorators/injectable';
 import propertyInject from '../decorators/property-inject';
 import Permission from './permission';
@@ -11,9 +10,14 @@ export default class Navigation {
   @propertyInject('auth') authService;
 
   navigationConfig = {};
+  loadComponentCallback = _.noop;
 
   setNavigationConfig(navigationConfig) {
     this.navigationConfig = navigationConfig;
+  }
+
+  setLoadComponentCallback(callback) {
+    this.loadComponentCallback = callback;
   }
 
   getConfigs() {
@@ -118,7 +122,7 @@ export default class Navigation {
         _.each(configs, (config) => {
           const routeConfig = {};
           routeConfig.name = config.name;
-          routeConfig.getComponent = asyncLoadComponent(config.component);
+          routeConfig.getComponent = this.loadComponentCallback(config.component);
           routeConfig.onEnter = (nextState, replace, callback) => (
             this.authService.isLoggedIn().then((token) => {
               if (!token) {
