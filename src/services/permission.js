@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { $AND } from '../../core/constants/common';
+import { $AND } from '../constants/common';
 import Auth from './auth';
 import injectable from '../decorators/injectable';
 import DI from '../di';

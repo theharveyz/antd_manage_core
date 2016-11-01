@@ -2,9 +2,6 @@ const groups = {};
 const openKeys = [];
 const selectedKeys = [];
 class Setting {
-
-  groups = {};
-
   static getGroup(group) {
     return groups[group];
   }
@@ -33,6 +30,7 @@ class Setting {
   static addOpenKeys(key) {
     openKeys.push(key);
   }
+
   static getSelectedKeys() {
     return selectedKeys;
   }

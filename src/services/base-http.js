@@ -1,5 +1,5 @@
 import urijs from 'urijs';
-import { HTTP_GET, HTTP_POST, HTTP_PUT } from '../../core/constants/http';
+import { HTTP_GET, HTTP_POST, HTTP_PUT } from '../constants/http';
 import 'whatwg-fetch';
 import {
   httpGet,

@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import { matchPattern } from 'react-router/lib/PatternUtils';
-import navigationConfig from '../../configs/navigation.js';
 import asyncLoadComponent from '../utils/async-load-component';
 import injectable from '../decorators/injectable';
 import propertyInject from '../decorators/property-inject';
@@ -11,10 +10,16 @@ export default class Navigation {
 
   @propertyInject('auth') authService;
 
+  navigationConfig = {};
+
+  setNavigationConfig(navigationConfig) {
+    this.navigationConfig = navigationConfig;
+  }
+
   getConfigs() {
     const permissionService = new Permission();
     return new Promise((resolve) => {
-      permissionService.getConfigPermission(navigationConfig).then((filterConfigs) => {
+      permissionService.getConfigPermission(this.navigationConfig).then((filterConfigs) => {
         resolve(filterConfigs);
       });
     });
