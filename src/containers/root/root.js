@@ -18,9 +18,9 @@ const history = configureHistory(store);
 class Root extends React.Component {
 
   static propTypes = {
-    navigationConfig: React.PropTypes.object,
+    navigationConfig: React.PropTypes.array,
     configs: React.PropTypes.object,
-    loadComponentCallback: React.PropTypes.func
+    pages: React.PropTypes.object
   };
 
   static notFoundRouteConfig = {
@@ -48,11 +48,11 @@ class Root extends React.Component {
   };
 
   componentWillMount() {
-    const { configs, navigationConfig, loadComponentCallback } = this.props;
+    const { configs, navigationConfig, pages } = this.props;
     DI.get('config').setConfigs(configs);
     DI.get('navigation')
       .setNavigationConfig(navigationConfig)
-      .setLoadComponentCallback(loadComponentCallback)
+      .setPages(pages)
       .getChildRoutesAndIndexRoute()
       .then((childRoutesAndIndexRoute) => {
         this.setState({
