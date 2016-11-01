@@ -1,0 +1,42 @@
+.container {
+  font-size: 12px;
+  display: inline-block;
+  position: relative;
+  top: -2px;
+}
+
+.setting {
+  font-size: 16px;
+  &:hover {
+    color: #d9007e;
+  }
+}
+
+.modal {
+  :global(.ant-modal-body) {
+    overflow: hidden;
+    padding: 0;
+  }
+  ul {
+    li {
+      padding: 10px 15px;
+      border-bottom: 1px solid #e9e9e9;
+      cursor: move;
+      width: 50%;
+      display: inline-block;
+      :global(.ant-switch) {
+        float: right;
+      }
+      i {
+        font-style: normal;
+        color: #999;
+        border: 1px solid #ddd;
+        display: inline-block;
+        width: 20px;
+        text-align: center;
+        margin-right: 10px;
+        border-radius: 10px;
+      }
+    }
+  }
+}

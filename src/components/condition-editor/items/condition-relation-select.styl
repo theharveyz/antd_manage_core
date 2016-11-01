@@ -1,0 +1,23 @@
+.container {
+  :global(.ant-select-selection) {
+    border: none !important;
+    transition: none;
+    background: transparent;
+  }
+  :global(.ant-select-open) {
+    :global(.ant-select-selection),
+    :global(.ant-select-selection):focus,
+    :global(.ant-select-selection):active {
+      border: #ddd !important;
+      box-shadow: none !important;
+      transition: none;
+    }
+  }
+  :global(.ant-select-selection),
+  :global(.ant-select-selection):focus,
+  :global(.ant-select-selection):active {
+    border: #ddd !important;
+    box-shadow: none !important;
+    transition: none;
+  }
+}

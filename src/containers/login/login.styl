@@ -1,0 +1,39 @@
+.container {
+  width: 350px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -175px;
+  margin-top: -125px;
+  .logo {
+    text-align: center;
+    img {
+      margin-bottom: 30px;
+    }
+  }
+
+  :global(.ant-form-item-required):before {
+    content: "";
+  }
+
+  .button {
+    text-align: center;
+  }
+  .modal {
+    font-size: 12px;
+    color: #d90034;
+    text-align: center;
+    font-weight: bold;
+  }
+  .code {
+    text-align: center;
+    input {
+      font-size: 24px;
+      letter-spacing: 1px;
+      height: auto;
+    }
+    :global(.ant-input-number-handler-wrap) {
+      display: none;
+    }
+  }
+}

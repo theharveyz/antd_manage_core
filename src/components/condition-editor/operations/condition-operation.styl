@@ -1,0 +1,37 @@
+.container {
+  color: #666;
+  div {
+    display: inline-block;
+    position: relative;
+    margin-right: 5px;
+    span {
+      border-radius: 6px;
+      border: 1px solid #e9e9e9;
+      background: #f7f7f7;
+      font-size: 12px;
+      margin: 4px 4px 4px 0;
+      cursor: move;
+      padding: 8px 10px;
+      display: inline-block;
+    }
+    i {
+      cursor: help;
+      position: absolute;
+      right: 12px;
+      top: 16px;
+    }
+  }
+  .help {
+    span {
+      padding-right: 24px;
+    }
+  }
+  .remove {
+    :global(.anticon-minus-circle) {
+      top: 0;
+      right: 0;
+      color: rgba(255, 82, 82, 0.87);
+      cursor: pointer;
+    }
+  }
+}
