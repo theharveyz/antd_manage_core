@@ -1,19 +1,12 @@
 import React from 'react';
+import DI from '../../di';
 import { Modal } from 'antd';
 import moment from 'moment';
-import propsInject from '../../decorators/props-inject';
+import styles from './birthday.styl';
 
-@propsInject({
-  store: 'commonOfflineStorage',
-  auth: 'auth'
-})
 class Birthday extends React.Component {
 
   static BRITHDAY_YEAR_STORE_KEY = 'prev-birthday-year';
-  static propTypes = {
-    store: React.PropTypes.object,
-    auth: React.PropTypes.object
-  };
 
   state = {
     visible: false,
@@ -21,10 +14,9 @@ class Birthday extends React.Component {
   };
 
   componentDidMount() {
-    const { auth, store } = this.props;
     Promise.all([
-      auth.getAccount(),
-      store.get(Birthday.BRITHDAY_YEAR_STORE_KEY)
+      DI.get('auth').getAccount(),
+      DI.get('commonOfflineStorage').get(Birthday.BRITHDAY_YEAR_STORE_KEY)
     ]).then(([account, year]) => {
       const isBirthdayDay = moment().format('MMDD') ===
         moment(account.birthday).format('MMDD');
@@ -37,26 +29,37 @@ class Birthday extends React.Component {
   }
 
   onClose() {
-    this.props.store
-      .add(Birthday.BRITHDAY_YEAR_STORE_KEY, this.state.year)
-      .then(() => {
-        this.setState({
-          visible: false
-        });
+    DI.get('commonOfflineStorage')
+    .add(Birthday.BRITHDAY_YEAR_STORE_KEY, this.state.year)
+    .then(() => {
+      this.setState({
+        visible: false
       });
+    });
   }
 
   render() {
     const { visible } = this.state;
+    const imgStyle = {
+      width: '100%',
+      display: 'block'
+    };
+    const closable = false;
     return (
       <Modal
         width="50%"
         visible={visible}
         onCancel={() => this.onClose()}
         footer=""
+        closable={closable}
+        wrapClassName={styles.modal}
       >
         <div>
-          hhhhh
+          <img
+            style={imgStyle}
+            src="https://o2qq673j2.qnssl.com/Fp0vJoC-FiA1eCYxxUyOSqwXK3NM"
+            role="presentation"
+          />
         </div>
       </Modal>
     );

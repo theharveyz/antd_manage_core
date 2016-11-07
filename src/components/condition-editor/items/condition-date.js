@@ -49,23 +49,11 @@ class ConditionDate extends React.Component {
 
   render() {
     const { text, value, form, predicate, predicateOnChange, uuid } = this.props;
-    const datePickerProps = form.getFieldProps(uuid, {
-      initialValue: value ? moment(value) : value
-    });
     const showTime = false;
     let dateDisabled = false;
     if (predicate === $IS_NOT_NULL || predicate === $IS_NULL) {
       dateDisabled = true;
     }
-    let datePicker = (
-      <DatePicker
-        showTime={showTime}
-        format="YYYY-MM-DD"
-        {...datePickerProps}
-        onChange={::this.onChangeProxy}
-        disabled={dateDisabled}
-      />
-    );
     return (
       <Form inline >
         <FormItem label={text} >
@@ -77,7 +65,16 @@ class ConditionDate extends React.Component {
           />
         </FormItem>
         <FormItem>
-          {datePicker}
+          {form.getFieldDecorator(uuid, {
+            initialValue: value ? moment(value) : value
+          })(
+            <DatePicker
+              showTime={showTime}
+              format="YYYY-MM-DD"
+              onChange={::this.onChangeProxy}
+              disabled={dateDisabled}
+            />
+          )}
         </FormItem>
         <Button onClick={::this.onDeleteProxy} shape="circle" ><Icon type="delete" /></Button>
       </Form>

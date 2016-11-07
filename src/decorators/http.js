@@ -6,6 +6,7 @@ const request = (method) => (takeManageToken) => (target, prop, descriptor) => {
   delete d.value;
   delete d.writable;
   // 使用function 保持 this
+  /*eslint func-names: ["error", "never"]*/
   d.get = function () {
     return (...args) => {
       const options = func.call(this, ...args);

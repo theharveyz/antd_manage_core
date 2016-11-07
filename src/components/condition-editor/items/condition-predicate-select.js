@@ -20,15 +20,14 @@ class ConditionPredicateSelect extends React.Component {
 
   render() {
     const { form, predicate, predicates } = this.props;
-    const predicateProps = form.getFieldProps('predicate', {
-      initialValue: predicate
-    });
     const selectStyle = {
       width: '80px'
     };
 
-    return (
-      <Select style={selectStyle} {...predicateProps} onChange={::this.predicateOnChangeProxy} >
+    return form.getFieldDecorator('predicate', {
+      initialValue: predicate
+    })(
+      <Select style={selectStyle} onChange={::this.predicateOnChangeProxy} >
         {_.map(predicates, (key, value) => (
           <Option key={key} value={value} >{key}</Option>
         ))}

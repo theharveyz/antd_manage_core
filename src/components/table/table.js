@@ -2,7 +2,7 @@ import React from 'react';
 import antd from 'antd';
 import { generatePagination, generateQuery } from '../../utils/ant-table';
 import ConditionSearch from '../condition-editor/condition-search';
-import TableColumnManage from './table-column-manage';
+import TableColumnManage from '../table-column-manage/table-column-manage';
 import _ from 'lodash';
 import styles from './table.styl';
 import AlertError from '../alert-error/alert-error';

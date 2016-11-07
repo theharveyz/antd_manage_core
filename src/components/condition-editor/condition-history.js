@@ -6,14 +6,7 @@ import { datetimeFormat } from '../../utils/common';
 import ConditionPreview from './blocks/condition-preview';
 import { arrayToStateConditions } from './conditions-utils';
 import DI from '../../di';
-import propsInjectFactory from '../../decorators/props-inject-factory';
 
-@propsInjectFactory({
-  store: {
-    key: 'offlineStorageFactory',
-    params: ['bmqb_condition_editor_history_store']
-  }
-})
 export default class ConditionHistory extends React.Component {
 
   static defaultProps = {
@@ -45,7 +38,7 @@ export default class ConditionHistory extends React.Component {
 
   componentWillMount() {
     const { name } = this.props;
-    this.props.store.get(name).then((historyConditions) => {
+    this.store.get(name).then((historyConditions) => {
       if (historyConditions) {
         this.setState({
           historyConditions
@@ -79,17 +72,19 @@ export default class ConditionHistory extends React.Component {
     const { historyConditions } = this.state;
     const { name } = this.props;
     historyConditions.splice(index, 1);
-    this.props.store.add(name, historyConditions).then(() => {
+    this.store.add(name, historyConditions).then(() => {
       this.setState({
         historyConditions
       });
     });
   }
 
-  addConditions(conditions, type) {
-    const { name, historyOfflineMaxSize, store } = this.props;
+  store = DI.get('offlineStorageFactory')('bmqb_condition_editor_history_store');
 
-    store.get(name).then((offlineConditions) => {
+  addConditions(conditions, type) {
+    const { name, historyOfflineMaxSize } = this.props;
+
+    this.store.get(name).then((offlineConditions) => {
       let historyConditions = offlineConditions;
 
       if (!historyConditions) {
@@ -106,7 +101,7 @@ export default class ConditionHistory extends React.Component {
         conditions
       });
 
-      store.add(name, historyConditions).then(() => {
+      this.store.add(name, historyConditions).then(() => {
         this.setState({
           historyConditions
         });

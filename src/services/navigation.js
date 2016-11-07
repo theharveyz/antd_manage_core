@@ -10,15 +10,9 @@ export default class Navigation {
   @propertyInject('auth') authService;
 
   navigationConfig = {};
-  pages = {};
 
   setNavigationConfig(navigationConfig) {
     this.navigationConfig = navigationConfig;
-    return this;
-  }
-
-  setPages(pages) {
-    this.pages = pages;
     return this;
   }
 
@@ -124,7 +118,7 @@ export default class Navigation {
         _.each(configs, (config) => {
           const routeConfig = {};
           routeConfig.name = config.name;
-          routeConfig.component = this.pages[config.component];
+          routeConfig.component = config.component;
           routeConfig.onEnter = (nextState, replace, callback) => (
             this.authService.isLoggedIn().then((token) => {
               if (!token) {

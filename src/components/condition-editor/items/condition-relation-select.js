@@ -21,19 +21,21 @@ class ConditionRelationSelect extends React.Component {
 
   render() {
     const { value, form } = this.props;
-    const conditionProps = form.getFieldProps('condition', {
-      initialValue: value
-    });
+
     const selectStyle = {
       width: '60px'
     };
 
     return (
       <div className={styles.container} >
-        <Select style={selectStyle} {...conditionProps} onChange={::this.onChangeProxy} >
-          <Option value={$AND} >AND</Option>
-          <Option value={$OR} >OR</Option>
-        </Select>
+        {form.getFieldDecorator('condition', {
+          initialValue: value
+        })(
+          <Select style={selectStyle} onChange={::this.onChangeProxy} >
+            <Option value={$AND} >AND</Option>
+            <Option value={$OR} >OR</Option>
+          </Select>
+        )}
       </div>
     );
   }

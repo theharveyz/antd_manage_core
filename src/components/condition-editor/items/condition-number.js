@@ -57,18 +57,16 @@ class ConditionNumber extends React.Component {
     };
     const firstOptionContent = '以下是您已输入的...';
     const firstOptionDisabled = true;
-    const inputProps = form.getFieldProps(uuid, {
-      initialValue: value
-    });
 
     let inputForm;
 
     if (predicate === $IN || predicate === $NOT_IN) {
-      inputForm = (
+      inputForm = form.getFieldDecorator(uuid, {
+        initialValue: value
+      })(
         <Select
           style={selectStyle}
           tags={tagsMode}
-          {...inputProps}
           onChange={::this.onSelectChange}
         >
           <Option
@@ -80,8 +78,10 @@ class ConditionNumber extends React.Component {
         </Select>
       );
     } else {
-      inputForm = (
-        <Input {...inputProps} onBlur={::this.onChangeProxy} />
+      inputForm = form.getFieldDecorator(uuid, {
+        initialValue: value
+      })(
+        <Input onBlur={::this.onChangeProxy} />
       );
     }
 

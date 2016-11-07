@@ -57,28 +57,27 @@ class ConditionInput extends React.Component {
     };
     const firstOptionContent = '以下是您已输入的...';
     const firstOptionDisabled = true;
-    const inputProps = form.getFieldProps(uuid, {
-      initialValue: value
-    });
 
     let inputDisabled = false;
     if (predicate === $IS_NOT_NULL || predicate === $IS_NULL) {
       inputDisabled = true;
     }
-    let inputForm = (
+    let inputForm = form.getFieldDecorator(uuid, {
+      initialValue: value
+    })(
       <Input
-        {...inputProps}
         onBlur={::this.onChangeProxy}
         disabled={inputDisabled}
       />
     );
 
     if (predicate === $IN || predicate === $NOT_IN) {
-      inputForm = (
+      inputForm = form.getFieldDecorator(uuid, {
+        initialValue: value
+      })(
         <Select
           style={selectStyle}
           tags={tagsMode}
-          {...inputProps}
           onChange={::this.onSelectChange}
         >
           <Option

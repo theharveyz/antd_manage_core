@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { $AND } from '../constants/common';
+import { $OR } from '../constants/common';
 import Auth from './auth';
 import injectable from '../decorators/injectable';
 import DI from '../di';
@@ -50,7 +50,7 @@ export default class Permission {
   }
 
   checkPermission(needPermission, userHasPermission) {
-    if (_.last(needPermission) === $AND) {
+    if (_.last(needPermission) !== $OR) {
       for (const permission of needPermission) {
         const permissionArray = permission.split('@');
         if (permissionArray.length === 2) {
@@ -84,8 +84,14 @@ export default class Permission {
     const methodArray = userHasPermission[method];
     if (!_.isEmpty(methodArray)) {
       for (const eachPermission of userHasPermission[method]) {
-        if (eachPermission.indexOf(needPermission) !== -1) {
-          return true;
+        if (method === 'proxy') {
+          if (eachPermission.indexOf(needPermission) !== -1) {
+            return true;
+          }
+        } else {
+          if (eachPermission === needPermission) {
+            return true;
+          }
         }
       }
     }

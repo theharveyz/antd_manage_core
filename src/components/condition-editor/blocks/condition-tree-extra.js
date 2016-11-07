@@ -26,48 +26,46 @@ class ConditionTreeExtra extends React.Component {
 
   render() {
     const { form, conditions, onClearConditions, onOptimizeConditions } = this.props;
-    const textProps = form.getFieldProps('text', {
-      rules: [
-        {
-          required: true,
-          message: '请填写操作名'
-        }
-      ]
-    });
-    const groupProps = form.getFieldProps('group', {
-      rules: [
-        {
-          required: true,
-          message: '请填写组名'
-        }
-      ]
-    });
-    const helpProps = form.getFieldProps('help');
+    const { getFieldDecorator } = form;
     const labelCol = { span: 8 };
     const wrapperCol = { span: 16 };
     const saveContent = (
       <div>
-        <Form horizontal>
+        <Form horizontal >
           <FormItem
             label="组名："
             labelCol={labelCol}
             wrapperCol={wrapperCol}
           >
-            <Input {...groupProps} />
+            {getFieldDecorator('group', {
+              rules: [
+                {
+                  required: true,
+                  message: '请填写组名'
+                }
+              ]
+            })(<Input />)}
           </FormItem>
           <FormItem
             label="操作名："
             labelCol={labelCol}
             wrapperCol={wrapperCol}
           >
-            <Input {...textProps} />
+            {getFieldDecorator('text', {
+              rules: [
+                {
+                  required: true,
+                  message: '请填写操作名'
+                }
+              ]
+            })(<Input />)}
           </FormItem>
           <FormItem
             label="帮助信息："
             labelCol={labelCol}
             wrapperCol={wrapperCol}
           >
-            <Input {...helpProps} />
+            {getFieldDecorator('help')(<Input />)}
           </FormItem>
           <FormItem wrapperCol={{ offset: 8 }} style={{ marginTop: 24 }} >
             <Button type="primary" onClick={::this.onSave} >保存</Button>

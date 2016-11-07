@@ -35,18 +35,16 @@ class ConditionInput extends React.Component {
   render() {
     const { form } = this.props;
 
-    const inputProps = form.getFieldProps('input', {
-      rules: [
-        {
-          validator: ::this.checkInput
-        }
-      ]
-    });
-
     return (
       <Form>
         <FormItem>
-          <Input type="textarea" {...inputProps} rows="10" />
+          {form.getFieldDecorator('input', {
+            rules: [
+              {
+                validator: ::this.checkInput
+              }
+            ]
+          })(<Input type="textarea" rows="10" />)}
         </FormItem>
         <Row type="flex" justify="center" >
           <Col>

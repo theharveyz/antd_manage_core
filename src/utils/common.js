@@ -4,7 +4,7 @@ import _ from 'lodash';
 import DI from '../di';
 
 export const stringToCamelCase = (string) => (
-  string.replace(/[-_][^-_]/g, (match) => match.charAt(1).toUpperCase())
+    string.replace(/[-_][^-_]/g, (match) => match.charAt(1).toUpperCase())
 );
 
 export const generateUUID = () => {
@@ -17,27 +17,27 @@ export const generateUUID = () => {
 };
 
 export const currencyFormat = (value) => (
-  `￥ ${numeral(value).format('0,0.00')}`
+    `￥ ${numeral(value).format('0,0.00')}`
 );
 
 export const datetimeFormat = (value) => (
-  value ? moment(value).format('YYYY-MM-DD HH:mm:ss') : value
+    value ? moment(value).format('YYYY-MM-DD HH:mm:ss') : value
 );
 
 export const timeFormat = (value) => (
-  value ? moment(value).format('HH:mm:ss') : value
+    value ? moment(value).format('HH:mm:ss') : value
 );
 
 export const dateFormat = (value) => (
-  value ? moment(value).format('YYYY-MM-DD') : value
+    value ? moment(value).format('YYYY-MM-DD') : value
 );
 
 export const arrayHydrate = (array, modelPrototype) => (
-  _.map(array, (item) => {
-    const model = _.clone(modelPrototype);
-    model.hydrate(item);
-    return model;
-  })
+    _.map(array, (item) => {
+      const model = _.clone(modelPrototype);
+      model.hydrate(item);
+      return model;
+    })
 );
 
 export const formatFormFields = (fields) => {
@@ -58,18 +58,18 @@ export const objectToFormFields = (object) => {
   return map;
 };
 
-export const humanizeByName = (arrayOrDIKey, name, defaultValue) => {
+export const humanizeByName = (arrayOrDIKey, value, defaultValue) => {
   let names = arrayOrDIKey;
 
   if (_.isString(arrayOrDIKey)) {
     names = DI.get(arrayOrDIKey);
   }
 
-  const object = _.find(names, { name });
+  const object = _.find(names, { value });
   if (object) {
-    return object.text;
+    return object.name;
   }
-  return defaultValue || name;
+  return defaultValue || value;
 };
 
 export const jsonToObject = (json) => {
@@ -109,3 +109,5 @@ export const formDecimalValidator = (rule, value, callback) => {
     callback();
   }
 };
+
+export const getColorByNum = (num) => DI.get('COLORS')[num % DI.get('COLORS').length];

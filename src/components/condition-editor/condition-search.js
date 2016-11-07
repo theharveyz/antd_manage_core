@@ -90,7 +90,7 @@ class ConditionSearch extends React.Component {
     const type = advancedConditions.length ? 'ConditionEditor' : 'ConditionSearch';
 
     if (emitConditions.length) {
-      this.refs.conditionHistory.getWrappedInstance().addConditions(emitConditions, type);
+      this.refs.conditionHistory.addConditions(emitConditions, type);
     }
 
     if (_.isFunction(onSearch)) {
