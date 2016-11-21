@@ -8,26 +8,20 @@ export default class DI {
     return kernel.get(key);
   }
 
-  static bind(key, value, override = false) {
-    if(override){
-      DI.unbind(key);
-    }
+  static bind(key, value) {
+    DI.unbind(key);
     kernel.bind(key).to(value).inSingletonScope();
     return this;
   }
 
-  static bindValue(key, value, override = false) {
-    if(override){
-      DI.unbind(key);
-    }
+  static bindValue(key, value) {
+    DI.unbind(key);
     kernel.bind(key).toConstantValue(value);
     return this;
   }
 
-  static bindFactory(key, value, override = false) {
-    if(override){
-      DI.unbind(key);
-    }
+  static bindFactory(key, value) {
+    DI.unbind(key);
     kernel.bind(key).toFactory(value);
     return this;
   }
