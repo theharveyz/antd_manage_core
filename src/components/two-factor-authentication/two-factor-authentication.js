@@ -1,9 +1,8 @@
 import React from 'react';
-import Auth from '../../services/auth';
-import AuthHttp from '../../services/auth-http';
 import { Card, Popover, Popconfirm, message, Alert } from 'antd';
 import Authenticator from './authenticator';
 import ConfigService from '../../services/config';
+import DI from '../../di';
 import styles from './two-factor-authentication.styl';
 
 const configService = new ConfigService();
@@ -15,9 +14,7 @@ class TwoFactorAuthentication extends React.Component {
   };
 
   componentWillMount() {
-    this.authService = new Auth();
-    this.authHttpService = new AuthHttp();
-    this.authService.getKeyVerified().then((verified) => {
+    DI.get('auth').getKeyVerified().then((verified) => {
       this.setState({
         verified
       });
@@ -25,8 +22,8 @@ class TwoFactorAuthentication extends React.Component {
   }
 
   onRemoveValidator() {
-    this.authHttpService.resetKey().then(() => {
-      this.authService.setKeyVerified('N');
+    DI.get('authHttp').resetKey().then(() => {
+      DI.get('auth').setKeyVerified('N');
       this.setState({
         verified: 'N'
       });
@@ -60,7 +57,7 @@ class TwoFactorAuthentication extends React.Component {
     const setValidatorExtra = (
       <Popover
         bottom="bottom"
-        content={<Authenticator onVerifySuccess={::this.onVerifySuccess} />}
+        content={<Authenticator onVerifySuccess={::this.onVerifySuccess}/>}
         trigger="click"
         overlayClassName={styles['set-validator-extra']}
       >
@@ -111,7 +108,7 @@ class TwoFactorAuthentication extends React.Component {
     }
 
     return (
-      <div className={styles.container} >
+      <div className={styles.container}>
         <div>
           {forceUseAlert}
           {components}
