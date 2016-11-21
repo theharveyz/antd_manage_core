@@ -17,7 +17,7 @@ const request = (method) => (takeManageToken) => (target, prop, descriptor) => {
         if (takeManageToken) {
           options.token = token;
         }
-        return this.request(null, options).then(options.success || _.nthArg(1));
+        return this.request(null, options).then(options.success || ((d) => d));
       });
     };
   };
