@@ -23,4 +23,15 @@ DI.bind('qiniuUploadHttp', QiniuUploadHttp);
 DI.bind('kvHttp', KvHttp);
 DI.bind('permission', Permission);
 
-export { BaseHttp };
+export {
+  BaseHttp,
+  Navigation,
+  Auth,
+  AuthHttp,
+  Permission,
+  Config,
+  OfflineStorage,
+  CommonOfflineStorage,
+  QiniuUploadHttp,
+  KvHttp
+};
