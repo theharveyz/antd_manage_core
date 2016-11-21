@@ -1,8 +1,7 @@
 import React from 'react';
-import Auth from '../../services/auth';
 import styles from './verify.styl';
 import { Button, Input, message } from 'antd';
-import AuthHttp from '../../services/auth-http';
+import DI from '../../di';
 
 class Verify extends React.Component {
 
@@ -15,11 +14,6 @@ class Verify extends React.Component {
     verifyLoading: false
   };
 
-  componentWillMount() {
-    this.authHttpService = new AuthHttp();
-    this.authService = new Auth();
-  }
-
   componentDidMount() {
     this.refs.code.refs.input.focus();
   }
@@ -29,11 +23,10 @@ class Verify extends React.Component {
     this.setState({
       verifyLoading: true
     });
-    this
-      .authHttpService
+    DI.get('authHttp')
       .verifyKey(this.refs.code.refs.input.value)
       .then(() => {
-        this.authService.setKeyVerified('Y');
+        DI.get('auth').setKeyVerified('Y');
         message.success('验证成功,身份验证器激活');
         this.setState({
           verifyLoading: false
