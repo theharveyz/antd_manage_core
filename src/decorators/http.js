@@ -13,12 +13,11 @@ const request = (method) => (takeManageToken) => (target, prop, descriptor) => {
     return (...args) => {
       const options = func.call(this, ...args);
       options.method = method;
-      const success = (data) => options.success || _.nthArg(1);
       return DI.get('auth').getToken().then((token) => {
         if (takeManageToken) {
           options.token = token;
         }
-        return this.request(null, options).then(success);
+        return this.request(null, options).then(options.success || _.nthArg(1));
       });
     };
   };
