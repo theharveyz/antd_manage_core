@@ -26,4 +26,12 @@ export default class DI {
   static getKernel() {
     return kernel;
   }
+
+  static unbind(key) {
+    const target = DI.get(key);
+    if (target) {
+      kernel.unbind(key);
+    }
+    return target;
+  }
 }

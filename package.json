@@ -1,5 +1,5 @@
 {
-  "name": "bmqb-manage-core",
+  "name": "react-manage-core",
   "version": "1.0.7",
   "description": "",
   "main": "src/index.js",
@@ -8,12 +8,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://kittencup@github.com/bmqb/bmqb_manage_core.git"
+    "url": "git+https://kittencup@github.com/bmqb/react_manage_core.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/bmqb/bmqb_manage_core/issues"
+    "url": "https://github.com/bmqb/react_manage_core/issues"
   },
-  "homepage": "https://github.com/bmqb/bmqb_manage_core#readme"
+  "homepage": "https://github.com/bmqb/react_manage_core#readme"
 }
