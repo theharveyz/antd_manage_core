@@ -31,10 +31,9 @@ export default class DI {
   }
 
   static unbind(key) {
-    const target = DI.get(key);
-    if (target) {
+    if (kernel.isBound(key)) {
       kernel.unbind(key);
     }
-    return target;
+    return this;
   }
 }
