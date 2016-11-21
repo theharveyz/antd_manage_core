@@ -1,5 +1,7 @@
 import DI from '../di';
 import { HTTP_GET, HTTP_DELETE, HTTP_POST, HTTP_PUT } from '../constants/http';
+import _ from 'lodash';
+
 const request = (method) => (takeManageToken) => (target, prop, descriptor) => {
   const d = descriptor;
   const func = d.value;
@@ -11,11 +13,13 @@ const request = (method) => (takeManageToken) => (target, prop, descriptor) => {
     return (...args) => {
       const options = func.call(this, ...args);
       options.method = method;
+      const success = options.success || _.nthArg(1);
+      const error = options.error || _.nthArg(1);
       return DI.get('auth').getToken().then((token) => {
         if (takeManageToken) {
           options.token = token;
         }
-        return this.request(null, options);
+        return this.request(null, options).then(success).then(error);
       });
     };
   };
