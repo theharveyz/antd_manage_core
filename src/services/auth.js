@@ -1,11 +1,12 @@
 import injectable from '../decorators/injectable';
-import propertyInjectFactory from '../decorators/property-inject-factory';
 import DI from '../di';
 
 @injectable()
 export default class Auth {
 
-  @propertyInjectFactory('offlineStorageFactory', [DI.get('config').get('core.auth.storageName')]) store;
+  constructor() {
+    this.store = DI.get('offlineStorageFactory')(DI.get('config').get('core.auth.storageName'))
+  }
 
   isLoggedIn() {
     return this.getToken().then((token) => !!token);
