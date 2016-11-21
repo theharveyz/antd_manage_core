@@ -3,7 +3,6 @@ import DI from '../../di';
 import { Popover, Button } from 'antd';
 import QRCode from 'qrcode.react';
 import styles from './install-authenticator.styl';
-import AuthHttp from '../../services/auth-http';
 
 const markets = {
   ios: {
