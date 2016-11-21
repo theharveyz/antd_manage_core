@@ -17,7 +17,6 @@ class LoginModal extends React.Component {
   };
 
   componentDidMount() {
-    this.authHttpService = new AuthHttp();
     this.checkToken();
     this.intervalId = setInterval(() => {
       this.checkToken();
@@ -44,8 +43,7 @@ class LoginModal extends React.Component {
 
   checkToken() {
     if (!this.state.visible) {
-      this
-        .authHttpService
+      DI.get('authHttp')
         .checkToken()
         .catch((error) => {
           if (error.response && error.response.status === 401) {
