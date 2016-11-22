@@ -4,6 +4,7 @@ import _ from 'lodash';
 import OfflineStorge from '../../services/offline-storge';
 import Sortable from 'sortablejs';
 import styles from './table-column-manage.styl';
+import DI from '../../di';
 
 class TableColumnManage extends React.Component {
 
@@ -20,7 +21,7 @@ class TableColumnManage extends React.Component {
 
   componentDidMount() {
     const { name, columns } = this.props;
-    this.offlineStorge = new OfflineStorge('bmqb_table_column_manage_store');
+    this.offlineStorge = new OfflineStorge(DI.get('config').get('core.table.columnManageStorageName'));
     this.offlineStorge.get(name).then((offlineConfigs) => {
       let configs = offlineConfigs;
       if (!configs || !_.isArray(configs) ||

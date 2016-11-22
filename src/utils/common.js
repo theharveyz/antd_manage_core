@@ -1,10 +1,11 @@
+import React from 'react';
 import numeral from 'numeral';
 import moment from 'moment';
 import _ from 'lodash';
 import DI from '../di';
 
 export const stringToCamelCase = (string) => (
-    string.replace(/[-_][^-_]/g, (match) => match.charAt(1).toUpperCase())
+  string.replace(/[-_][^-_]/g, (match) => match.charAt(1).toUpperCase())
 );
 
 export const generateUUID = () => {
@@ -17,27 +18,31 @@ export const generateUUID = () => {
 };
 
 export const currencyFormat = (value) => (
-    `￥ ${numeral(value).format('0,0.00')}`
+  `￥ ${numeral(value).format('0,0.00')}`
 );
 
-export const datetimeFormat = (value) => (
-    value ? moment(value).format('YYYY-MM-DD HH:mm:ss') : value
+export const unixToMoment = (timestamp) => (
+  moment.unix(timestamp)
 );
 
-export const timeFormat = (value) => (
-    value ? moment(value).format('HH:mm:ss') : value
+export const datetimeFormat = (value, isTimestamp = false) => (
+  value ? moment(isTimestamp ? unixToMoment(value) : value).format('YYYY-MM-DD HH:mm:ss') : value
 );
 
-export const dateFormat = (value) => (
-    value ? moment(value).format('YYYY-MM-DD') : value
+export const timeFormat = (value, isTimestamp = false) => (
+  value ? moment(isTimestamp ? unixToMoment(value) : value).format('HH:mm:ss') : value
+);
+
+export const dateFormat = (value, isTimestamp = false) => (
+  value ? moment(isTimestamp ? unixToMoment(value) : value).format('YYYY-MM-DD') : value
 );
 
 export const arrayHydrate = (array, modelPrototype) => (
-    _.map(array, (item) => {
-      const model = _.clone(modelPrototype);
-      model.hydrate(item);
-      return model;
-    })
+  _.map(array, (item) => {
+    const model = _.clone(modelPrototype);
+    model.hydrate(item);
+    return model;
+  })
 );
 
 export const formatFormFields = (fields) => {
@@ -68,6 +73,21 @@ export const humanizeByName = (arrayOrDIKey, value, defaultValue) => {
   const object = _.find(names, { value });
   if (object) {
     return object.name;
+  }
+  return defaultValue || value;
+};
+
+export const humanizeByColorName = (arrayOrDIKey, value, defaultValue) => {
+  let names = arrayOrDIKey;
+
+  if (_.isString(arrayOrDIKey)) {
+    names = DI.get(arrayOrDIKey);
+  }
+
+  const object = _.find(names, { value });
+  if (object) {
+    const style = { color: object.color };
+    return <span style={style}>{object.name}</span>;
   }
   return defaultValue || value;
 };
