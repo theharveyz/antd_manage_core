@@ -11,11 +11,15 @@ export default class Permission extends React.Component {
   state = { showChildren: false };
 
   componentWillMount() {
-    DI.get('permission')
-      .checkPermissionPromise(this.props.needPermission)
-      .then((data) => {
-        this.setState({ showChildren: data });
-      });
+    if (!this.props.needPermission.length) {
+      this.setState({ showChildren: true });
+    } else {
+      DI.get('permission')
+        .checkPermissionPromise(this.props.needPermission)
+        .then((data) => {
+          this.setState({ showChildren: data });
+        });
+    }
   }
 
   render() {
