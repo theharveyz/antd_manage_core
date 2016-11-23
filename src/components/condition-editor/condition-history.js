@@ -37,6 +37,7 @@ export default class ConditionHistory extends React.Component {
   };
 
   constructor() {
+    super();
     this.store = DI.get('offlineStorageFactory')(DI.get('config').get('core.conditionEditor.historyStorageName'));
   }
 
