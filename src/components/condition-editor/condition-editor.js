@@ -47,7 +47,7 @@ class ConditionEditor extends React.Component {
 
   constructor(props) {
     super(props);
-    this.shortcutSaveStore = new OfflineStorage(DI.get('core.conditionEditor.shortcutStorageName'));
+    this.shortcutSaveStore = new OfflineStorage(DI.get('config').get('core.conditionEditor.shortcutStorageName'));
   }
 
   state = {

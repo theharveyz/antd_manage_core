@@ -36,6 +36,10 @@ export default class ConditionHistory extends React.Component {
     visible: false
   };
 
+  constructor() {
+    this.store = DI.get('offlineStorageFactory')(DI.get('config').get('core.conditionEditor.historyStorageName'));
+  }
+
   componentWillMount() {
     const { name } = this.props;
     this.store.get(name).then((historyConditions) => {
@@ -78,8 +82,6 @@ export default class ConditionHistory extends React.Component {
       });
     });
   }
-
-  store = DI.get('offlineStorageFactory')(DI.get('config').get('core.conditionEditor.historyStorageName'));
 
   addConditions(conditions, type) {
     const { name, historyOfflineMaxSize } = this.props;
