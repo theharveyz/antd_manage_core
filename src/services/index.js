@@ -9,11 +9,10 @@ import OfflineStorage from './offline-storge';
 import CommonOfflineStorage from './common-offline-storge';
 import QiniuUploadHttp from './qiniu-upload-http';
 import KvHttp from './kv-http';
+DI.bind('config', Config);
 
 DI.bindFactory('offlineStorageFactory', () => (name) => new OfflineStorage(name));
 DI.bindValue('commonOfflineStorage', new CommonOfflineStorage);
-
-DI.bind('config', Config);
 
 DI.bind('navigation', Navigation);
 DI.bind('baseHttp', BaseHttp);
