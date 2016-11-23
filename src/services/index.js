@@ -12,7 +12,7 @@ import KvHttp from './kv-http';
 DI.bind('config', Config);
 
 DI.bindFactory('offlineStorageFactory', () => (name) => new OfflineStorage(name));
-DI.bindValue('commonOfflineStorage', () => new CommonOfflineStorage);
+DI.bindFactory('commonOfflineStorage', () => new CommonOfflineStorage);
 
 DI.bind('navigation', Navigation);
 DI.bind('baseHttp', BaseHttp);
