@@ -79,7 +79,7 @@ export default class ConditionHistory extends React.Component {
     });
   }
 
-  store = DI.get('offlineStorageFactory')('bmqb_condition_editor_history_store');
+  store = DI.get('offlineStorageFactory')(DI.get('config').get('core.conditionEditor.historyStorageName'));
 
   addConditions(conditions, type) {
     const { name, historyOfflineMaxSize } = this.props;

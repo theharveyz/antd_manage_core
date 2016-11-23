@@ -1,11 +1,12 @@
 import OfflineStorage from './offline-storge';
 import { injectable } from 'inversify';
+import DI  from '../di';
 
 @injectable()
 class CommonOfflineStorage extends OfflineStorage {
 
   constructor() {
-    super('bmqb_manage_common_store');
+    super(DI.get('config').get('core.commonOfflineStorageName'));
   }
 
 }

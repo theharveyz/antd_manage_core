@@ -22,6 +22,8 @@ import {
   parseInputConditions,
   checkConditionsValueIsNotNull
 } from './conditions-utils';
+import DI from '../../di';
+
 import { OPERATION_SHORTCUT, $AND } from './condition-constants';
 
 class ConditionEditor extends React.Component {
@@ -45,7 +47,7 @@ class ConditionEditor extends React.Component {
 
   constructor(props) {
     super(props);
-    this.shortcutSaveStore = new OfflineStorage('bmqb_condition_editor_shortcut_store');
+    this.shortcutSaveStore = new OfflineStorage(DI.get('core.conditionEditor.shortcutStorageName'));
   }
 
   state = {
