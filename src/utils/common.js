@@ -17,9 +17,13 @@ export const generateUUID = () => {
   });
 };
 
-export const currencyFormat = (value) => (
-  `￥ ${numeral(value).format('0,0.00')}`
-);
+export const currencyFormat = (value, digit = 2) => {
+  let format = _.padEnd('0,0.', 6, '0');
+  if (_.isNumber(digit)) {
+    format = _.padEnd('0,0.', 4 + digit, '0');
+  }
+  return `￥ ${numeral(value).format(format)}`;
+};
 
 export const isBooleanTrue = (value) => (
   typeof(value) === "boolean" && value === true
