@@ -27,7 +27,7 @@ class ConditionSearch extends React.Component {
     onSearch: _.noop,
     conditions: [],
     realTime: true,
-    advanced: true
+    advanced: false
   };
 
   static propTypes = {
