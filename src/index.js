@@ -1,3 +1,5 @@
+import './styles';
+
 export * as services from './services';
 export * as components from './components';
 export * as constants from './constants';
