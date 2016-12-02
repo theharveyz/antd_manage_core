@@ -45,9 +45,23 @@ export default class ConditionHistory extends React.Component {
     const { name } = this.props;
     this.store.get(name).then((historyConditions) => {
       if (historyConditions) {
-        this.setState({
-          historyConditions
-        });
+        let dataKeyChanged = false;
+        {historyConditions.map((c) => {
+            const conditions = arrayToStateConditions(c.conditions, this);
+            if (conditions.length === 0) {
+              dataKeyChanged = true;
+            } else {
+              c.preview = conditions;
+            }
+          })
+        }
+        if (dataKeyChanged) {
+          this.store.clear(name);
+        } else {
+          this.setState({
+            historyConditions
+          });
+        }
       }
     });
   }
@@ -150,7 +164,10 @@ export default class ConditionHistory extends React.Component {
         title: '预览',
         key: 'preview',
         render: (text, record) => {
-          const conditions = arrayToStateConditions(record.conditions, this);
+          let conditions = record.preview;
+          if (!conditions) {
+            conditions = arrayToStateConditions(record.conditions, this);
+          }
           const content = (
             <ConditionPreview conditions={conditions} />
           );
