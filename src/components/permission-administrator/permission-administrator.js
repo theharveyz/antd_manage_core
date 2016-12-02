@@ -49,7 +49,7 @@ export default class PermissionAdministrator extends React.Component {
       title: '操作',
       show: true,
       render: (value) => (
-        <div>
+        <div className="table-operation">
           <Permission
             needPermission={['put@/v1/permission/account/:id/roles']}
           >
@@ -58,14 +58,6 @@ export default class PermissionAdministrator extends React.Component {
               adminHasRole={value.permission_roles}
               handleClose={::this.onAdminHasRolePreviewClose}
             />
-          </Permission>
-          <Permission
-            needPermission={[
-              'put@/v1/permission/account/:id/roles',
-              'delete@/v1/permission/account/:id/administrator'
-            ]}
-          >
-            <span className="ant-divider" ></span>
           </Permission>
           <Permission
             needPermission={['delete@/v1/permission/account/:id/administrator']}
