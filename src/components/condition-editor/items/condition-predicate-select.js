@@ -23,8 +23,7 @@ class ConditionPredicateSelect extends React.Component {
     const selectStyle = {
       width: '80px'
     };
-
-    return form.getFieldDecorator('predicate', {
+    let selectField = form.getFieldDecorator('predicate', {
       initialValue: predicate
     })(
       <Select style={selectStyle} onChange={::this.predicateOnChangeProxy} >
@@ -33,6 +32,10 @@ class ConditionPredicateSelect extends React.Component {
         ))}
       </Select>
     );
+    if (Object.keys(predicates).length === 1 && '$eq' in predicates) {
+      selectField = null;
+    }
+    return selectField;
   }
 }
 
