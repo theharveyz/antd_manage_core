@@ -87,19 +87,11 @@ export default class PermissionRole extends React.Component {
       title: '操作',
       show: true,
       render: (value) => (
-        <div>
+        <div className="table-operation">
           <Permission
             needPermission={['put@/v1/permission/role/:id']}
           >
             <a onClick={() => this.onEditRole(value.id)} >编辑</a>
-          </Permission>
-          <Permission
-            needPermission={[
-              'put@/v1/permission/role/:id',
-              'delete@/v1/permission/role/:id'
-            ]}
-          >
-            <span className="ant-divider" ></span>
           </Permission>
           <Permission
             needPermission={['delete@/v1/permission/role/:id']}
