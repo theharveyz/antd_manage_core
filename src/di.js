@@ -1,7 +1,7 @@
-import {Container} from 'inversify';
+import inversify from 'inversify';
 import 'reflect-metadata';
 
-const container = new Container();
+const container = new inversify.Container();
 
 export default class DI {
   static get(key) {
