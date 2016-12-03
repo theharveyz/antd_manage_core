@@ -1,38 +1,38 @@
-import inversify from 'inversify';
+import {Container} from 'inversify';
 import 'reflect-metadata';
 
-const kernel = new inversify.Kernel();
+const container = new Container();
 
 export default class DI {
   static get(key) {
-    return kernel.get(key);
+    return container.get(key);
   }
 
   static bind(key, value) {
     DI.unbind(key);
-    kernel.bind(key).to(value).inSingletonScope();
+    container.bind(key).to(value).inSingletonScope();
     return this;
   }
 
   static bindValue(key, value) {
     DI.unbind(key);
-    kernel.bind(key).toConstantValue(value);
+    container.bind(key).toConstantValue(value);
     return this;
   }
 
   static bindFactory(key, value) {
     DI.unbind(key);
-    kernel.bind(key).toFactory(value);
+    container.bind(key).toFactory(value);
     return this;
   }
 
-  static getKernel() {
-    return kernel;
+  static getContainer() {
+    return container;
   }
 
   static unbind(key) {
-    if (kernel.isBound(key)) {
-      kernel.unbind(key);
+    if (container.isBound(key)) {
+      container.unbind(key);
     }
     return this;
   }
