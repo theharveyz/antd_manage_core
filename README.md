@@ -1,1 +1,1 @@
-# bmqb_manage_core
+# antd_manage_core
