@@ -189,51 +189,55 @@ export const getCondition = (uuid, conditions) => {
 export const generateConditionByKey = (key, editor, type) => {
   const configs = editor.props[`${type}Configs`];
   const condition = _.cloneDeep(configs[key]);
-  condition.operation = type;
-  condition.operationValue = key;
-  condition.predicate = DEFAULT_PREDICATE;
-  condition.uuid = generateUUID();
-  condition.onChange = (event) => {
-    const uuid = event.uuid;
-    const conditions = editor.state.conditions;
-    const targetCondition = getCondition(uuid, conditions).condition;
-    if (targetCondition.value !== event.value) {
-      targetCondition.value = event.value;
-      editor.setConditions(conditions);
-    }
-  };
-  condition.predicateOnChange = (event) => {
-    const { predicate, uuid } = event;
-    const conditions = editor.state.conditions;
-    const targetCondition = getCondition(uuid, conditions).condition;
+  if (condition) {
+    condition.operation = type;
+    condition.operationValue = key;
+    condition.predicate = DEFAULT_PREDICATE;
+    condition.uuid = generateUUID();
+    condition.onChange = (event) => {
+      const uuid = event.uuid;
+      const conditions = editor.state.conditions;
+      const targetCondition = getCondition(uuid, conditions).condition;
+      if (targetCondition.value !== event.value) {
+        targetCondition.value = event.value;
+        editor.setConditions(conditions);
+      }
+    };
+    condition.predicateOnChange = (event) => {
+      const { predicate, uuid } = event;
+      const conditions = editor.state.conditions;
+      const targetCondition = getCondition(uuid, conditions).condition;
 
-    if (predicate === $IS_NOT_NULL || predicate === $IS_NULL) {
-      targetCondition.value = undefined;
-    }
-
-    if (predicate === $IN || predicate === $NOT_IN) {
-      if (!_.isArray(targetCondition.value)) {
+      if (predicate === $IS_NOT_NULL || predicate === $IS_NULL) {
         targetCondition.value = undefined;
       }
-    }
 
-    targetCondition.predicate = predicate;
-    editor.setConditions(conditions);
-  };
-  condition.onDelete = (event) => {
-    const uuid = event.uuid;
-    const conditions = editor.state.conditions;
-    const targetCondition = getCondition(uuid, conditions);
-    targetCondition.parentCondition.splice(targetCondition.index, 1);
-    editor.setConditions(conditions);
-  };
+      if (predicate === $IN || predicate === $NOT_IN) {
+        if (!_.isArray(targetCondition.value)) {
+          targetCondition.value = undefined;
+        }
+      }
+
+      targetCondition.predicate = predicate;
+      editor.setConditions(conditions);
+    };
+    condition.onDelete = (event) => {
+      const uuid = event.uuid;
+      const conditions = editor.state.conditions;
+      const targetCondition = getCondition(uuid, conditions);
+      targetCondition.parentCondition.splice(targetCondition.index, 1);
+      editor.setConditions(conditions);
+    };
+  }
   return condition;
 };
 
 export const objectToCondition = (object, editor) => {
   const condition = generateConditionByKey(object.operationValue, editor, object.operation);
-  condition.value = object.value;
-  condition.predicate = object.predicate;
+  if (condition) {
+    condition.value = object.value;
+    condition.predicate = object.predicate;
+  }
   return condition;
 };
 
@@ -247,7 +251,10 @@ export const arrayToStateConditions = (items, editor) => {
     if (_.isArray(item)) {
       conditions.push(arrayToStateConditions(item, editor));
     } else {
-      conditions.push(objectToCondition(item, editor));
+      const condition = objectToCondition(item, editor);
+      if (condition) {
+        conditions.push(condition);
+      }
     }
   }
   if (conditions.length) {
