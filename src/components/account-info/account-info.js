@@ -1,7 +1,7 @@
 import React from 'react';
 import { hashHistory } from 'react-router';
 import DI from '../../di';
-import { Menu, Dropdown, Icon, Modal } from 'antd';
+import { Menu, Dropdown, Icon, Modal, message } from 'antd';
 import AccountSetting from '../account-setting/account-setting';
 import GoogleMaterialIcon from '../../components/google-material-icon/google-material-icon';
 
@@ -60,6 +60,18 @@ export default class AccountInfo extends React.Component {
     });
   }
 
+  onSyncPermission() {
+    DI.get('authHttp').getResource().then((resource) => {
+      DI.get('auth').setPermission(resource)
+        .then(()=>{
+        message.success('同步权限成功');
+      })
+        .catch(()=>{
+        message.error('同步权限失败');
+      })
+    });
+  }
+
   logout() {
     const doClearAndDispatch = () => {
       DI.get('auth').clear().then(() => {
@@ -80,6 +92,12 @@ export default class AccountInfo extends React.Component {
         <MenuItem>
           <a onClick={::this.onShow} >
             <GoogleMaterialIcon type="settings" /> 设置
+          </a>
+        </MenuItem>
+        <Menu.Divider />
+        <MenuItem>
+          <a onClick={::this.onSyncPermission} >
+            <GoogleMaterialIcon type="sync" /> 同步权限
           </a>
         </MenuItem>
         <Menu.Divider />

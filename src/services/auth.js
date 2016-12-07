@@ -3,6 +3,8 @@ import DI from '../di';
 
 @injectable()
 export default class Auth {
+  permissionOnChange = () => {
+  };
 
   constructor() {
     this.store = DI.get('offlineStorageFactory')(DI.get('config').get('core.auth.storageName'))
@@ -41,7 +43,10 @@ export default class Auth {
   }
 
   setPermission(permission) {
-    return this.store.add('permission', permission);
+    return this.store.add('permission', permission).then((data) => {
+      this.permissionOnChange();
+      return data;
+    })
   }
 
   setKeyVerified(keyStatus) {
@@ -52,5 +57,9 @@ export default class Auth {
 
   getKeyVerified() {
     return this.getAccount().then((account) => (account.key_verified));
+  }
+
+  listenPermissionChange(func) {
+    this.permissionOnChange = func;
   }
 }

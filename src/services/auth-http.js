@@ -30,6 +30,13 @@ export default class AuthHttp extends BaseHttp {
   }
 
   @httpGet(true)
+  getResource() {
+    return {
+      url: `${this.api}/resource`
+    };
+  }
+
+  @httpGet(true)
   generateKey() {
     return {
       url: `${this.api}/generateKey`

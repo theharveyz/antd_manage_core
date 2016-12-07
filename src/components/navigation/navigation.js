@@ -18,9 +18,11 @@ class Navigation extends React.Component {
   };
 
   componentDidMount() {
-    DI.get('navigation')
-      .getConfigs()
-      .then((configs) => this.setState({ configs }));
+    this.getNavigation();
+
+    DI.get('auth').listenPermissionChange(() => {
+      this.getNavigation();
+    });
 
     this.unsubscribed = this.context.router.listen(::this.locationHasChanged);
   }
@@ -44,6 +46,12 @@ class Navigation extends React.Component {
       openKeys
     });
   };
+
+  getNavigation() {
+    DI.get('navigation')
+      .getConfigs()
+      .then((configs) => this.setState({ configs }));
+  }
 
   locationHasChanged(toRoute) {
     const path = toRoute.pathname;
