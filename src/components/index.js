@@ -1,4 +1,5 @@
 export AlertError from './alert-error/alert-error';
+export TaskCenter from './task-center/task-center';
 export ConditionEditor from './condition-editor/condition-editor';
 export ConditionSearch from './condition-editor/condition-search';
 export ConditionHistory from './condition-editor/condition-history';
