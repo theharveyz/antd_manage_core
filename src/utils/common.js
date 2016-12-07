@@ -26,7 +26,7 @@ export const currencyFormat = (value, digit = 2) => {
 };
 
 export const isBooleanTrue = (value) => (
-  typeof(value) === "boolean" && value === true
+  typeof(value) === 'boolean' && value === true
 );
 
 
@@ -35,15 +35,18 @@ export const unixToMoment = (timestamp) => (
 );
 
 export const datetimeFormat = (value, isTimestamp = false) => (
-  value ? moment(isBooleanTrue(isTimestamp) ? unixToMoment(value) : value).format('YYYY-MM-DD HH:mm:ss') : value
+  value ? moment(isBooleanTrue(isTimestamp) ?
+    unixToMoment(value) : value).format('YYYY-MM-DD HH:mm:ss') : value
 );
 
 export const timeFormat = (value, isTimestamp = false) => (
-  value ? moment(isBooleanTrue(isTimestamp) ? unixToMoment(value) : value).format('HH:mm:ss') : value
+  value ? moment(isBooleanTrue(isTimestamp) ?
+    unixToMoment(value) : value).format('HH:mm:ss') : value
 );
 
 export const dateFormat = (value, isTimestamp = false) => (
-  value ? moment(isBooleanTrue(isTimestamp) ? unixToMoment(value) : value).format('YYYY-MM-DD') : value
+  value ? moment(isBooleanTrue(isTimestamp) ?
+    unixToMoment(value) : value).format('YYYY-MM-DD') : value
 );
 
 export const arrayHydrate = (array, modelPrototype) => (

@@ -51,7 +51,9 @@ class ConditionEditor extends React.Component {
   };
 
   componentWillMount() {
-    this.shortcutSaveStore = new OfflineStorage(DI.get('config').get('core.conditionEditor.shortcutStorageName'));
+    this.shortcutSaveStore = new OfflineStorage(
+      DI.get('config').get('core.conditionEditor.shortcutStorageName')
+    );
     this.setInputConditions(this.props.conditions);
     this.mergeStorageStore();
   }

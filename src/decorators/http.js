@@ -1,6 +1,5 @@
 import DI from '../di';
 import { HTTP_GET, HTTP_DELETE, HTTP_POST, HTTP_PUT } from '../constants/http';
-import _ from 'lodash';
 
 const request = (method) => (takeManageToken) => (target, prop, descriptor) => {
   const d = descriptor;
@@ -17,7 +16,7 @@ const request = (method) => (takeManageToken) => (target, prop, descriptor) => {
         if (takeManageToken) {
           options.token = token;
         }
-        return this.request(null, options).then(options.success || ((d) => d));
+        return this.request(null, options).then(options.success || ((f) => f));
       });
     };
   };

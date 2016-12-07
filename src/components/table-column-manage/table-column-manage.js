@@ -21,7 +21,9 @@ class TableColumnManage extends React.Component {
 
   componentDidMount() {
     const { name, columns } = this.props;
-    this.offlineStorge = new OfflineStorge(DI.get('config').get('core.table.columnManageStorageName'));
+    this.offlineStorge = new OfflineStorge(
+      DI.get('config').get('core.table.columnManageStorageName')
+    );
     this.offlineStorge.get(name).then((offlineConfigs) => {
       let configs = offlineConfigs;
       if (!configs || !_.isArray(configs) ||

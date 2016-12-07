@@ -33,6 +33,15 @@ export default class BaseHttp {
     };
   }
 
+  @httpPost(true)
+  addTableToExcelTask(data, queryString) {
+    return {
+      url: `${this.api}/tableToExcelTask`,
+      body: JSON.stringify(data),
+      queryString
+    };
+  }
+
   @httpGet(true)
   get(id) {
     return {
