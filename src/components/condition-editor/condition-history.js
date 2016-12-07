@@ -31,30 +31,33 @@ export default class ConditionHistory extends React.Component {
     store: React.PropTypes.object
   };
 
+  constructor() {
+    super();
+    this.store = DI.get('offlineStorageFactory')(
+      DI.get('config').get('core.conditionEditor.historyStorageName')
+    );
+  }
+
   state = {
     historyConditions: [],
     visible: false
   };
-
-  constructor() {
-    super();
-    this.store = DI.get('offlineStorageFactory')(DI.get('config').get('core.conditionEditor.historyStorageName'));
-  }
 
   componentWillMount() {
     const { name } = this.props;
     this.store.get(name).then((historyConditions) => {
       if (historyConditions) {
         let dataKeyChanged = false;
-        {historyConditions.map((c) => {
-            const conditions = arrayToStateConditions(c.conditions, this);
-            if (conditions.length === 0) {
-              dataKeyChanged = true;
-            } else {
-              c.preview = conditions;
-            }
-          })
-        }
+        historyConditions.map((h) => {
+          const c = h;
+          const conditions = arrayToStateConditions(c.conditions, this);
+          if (conditions.length === 0) {
+            dataKeyChanged = true;
+          } else {
+            c.preview = conditions;
+          }
+          return conditions;
+        });
         if (dataKeyChanged) {
           this.store.clear(name);
         } else {
@@ -150,7 +153,7 @@ export default class ConditionHistory extends React.Component {
         dataIndex: 'type',
         render: (text) => {
           if (text === 'ConditionEditor') {
-            return (<span className={styles.advanced} >高级搜索</span>);
+            return (<span className={styles.advanced}>高级搜索</span>);
           }
           return '搜索';
         }
@@ -172,7 +175,7 @@ export default class ConditionHistory extends React.Component {
             <ConditionPreview conditions={conditions} />
           );
           return (
-            <Popover placement="bottom" content={content} >
+            <Popover placement="bottom" content={content}>
               <a>预览</a>
             </Popover>
           );
@@ -183,9 +186,9 @@ export default class ConditionHistory extends React.Component {
         key: 'operation',
         render: (text, record, index) => (
           <div>
-            <a data-index={index} onClick={::this.onUseProxy} >使用</a>
-            <span className="ant-divider" ></span>
-            <a data-index={index} onClick={::this.onDelete} >删除</a>
+            <a data-index={index} onClick={::this.onUseProxy}>使用</a>
+            <span className="ant-divider"></span>
+            <a data-index={index} onClick={::this.onDelete}>删除</a>
           </div>
         )
       }
@@ -196,8 +199,8 @@ export default class ConditionHistory extends React.Component {
     };
 
     return (
-      <div className={styles.container} >
-        <a onClick={::this.onShow} >搜索历史</a>
+      <div className={styles.container}>
+        <a onClick={::this.onShow}>搜索历史</a>
         <Modal
           className={styles.modal}
           title="搜索历史"

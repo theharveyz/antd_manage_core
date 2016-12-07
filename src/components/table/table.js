@@ -3,6 +3,7 @@ import antd from 'antd';
 import { generatePagination, generateQuery } from '../../utils/ant-table';
 import ConditionSearch from '../condition-editor/condition-search';
 import TableColumnManage from '../table-column-manage/table-column-manage';
+import TableToExcel from '../table-to-excel/table-to-excel';
 import _ from 'lodash';
 import styles from './table.styl';
 import AlertError from '../alert-error/alert-error';
@@ -27,7 +28,8 @@ class Table extends React.Component {
     onDataChange: React.PropTypes.func,
     handleFetchOptions: React.PropTypes.func,
     pageSizeChanger: React.PropTypes.bool,
-    formatSorter: React.PropTypes.func
+    formatSorter: React.PropTypes.func,
+    exportExcel: false
   };
   state = {
     data: [],
@@ -128,21 +130,39 @@ class Table extends React.Component {
       pagination,
       filterColumns,
       dataLoading,
-      dataLoadError
+      dataLoadError,
+      queryString
     } = this.state;
     const {
       tableColumnManageConfigs,
       conditionSearchConfigs,
       tableColumnManage,
       conditionSearch,
-      tableProps
+      tableProps,
+      httpService,
+      exportExcel
     } = this.props;
+
+    let tableToExcelComponent = null;
+
+    if (exportExcel) {
+      tableToExcelComponent = (
+        <TableToExcel
+          columns={filterColumns}
+          httpService={httpService}
+          dataCount={pagination.total}
+          queryString={queryString}
+        />
+      );
+    }
+
     let tableColumnManageComponent = (
       <div>
         <TableColumnManage
           {...tableColumnManageConfigs}
           onColumnsChange={::this.onColumnsChange}
         />
+        {tableToExcelComponent}
         <a className={styles.reload} onClick={::this.fetchData} >
           <Icon type="reload" />
         </a>
