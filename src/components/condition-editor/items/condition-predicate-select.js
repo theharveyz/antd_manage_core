@@ -23,19 +23,23 @@ class ConditionPredicateSelect extends React.Component {
     const selectStyle = {
       width: '80px'
     };
-    let selectField = form.getFieldDecorator('predicate', {
+    let selectFieldDisabled = false;
+    if (Object.keys(predicates).length === 1 && '$eq' in predicates) {
+      selectFieldDisabled = true;
+    }
+    return form.getFieldDecorator('predicate', {
       initialValue: predicate
     })(
-      <Select style={selectStyle} onChange={::this.predicateOnChangeProxy} >
+      <Select
+        style={selectStyle}
+        onChange={::this.predicateOnChangeProxy}
+        disabled={selectFieldDisabled}
+      >
         {_.map(predicates, (key, value) => (
           <Option key={key} value={value} >{key}</Option>
         ))}
       </Select>
     );
-    if (Object.keys(predicates).length === 1 && '$eq' in predicates) {
-      selectField = null;
-    }
-    return selectField;
   }
 }
 
