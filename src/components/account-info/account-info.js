@@ -4,6 +4,7 @@ import DI from '../../di';
 import { Menu, Dropdown, Icon, Modal, message } from 'antd';
 import AccountSetting from '../account-setting/account-setting';
 import GoogleMaterialIcon from '../../components/google-material-icon/google-material-icon';
+import TaskCenter from '../../components/task-center/task-center';
 
 import styles from './account-info.styl';
 
@@ -90,14 +91,18 @@ export default class AccountInfo extends React.Component {
     const menu = (
       <Menu className={styles.menu} >
         <MenuItem>
-          <a onClick={::this.onShow} >
-            <GoogleMaterialIcon type="settings" /> 设置
-          </a>
+          <TaskCenter />
         </MenuItem>
         <Menu.Divider />
         <MenuItem>
           <a onClick={::this.onSyncPermission} >
             <GoogleMaterialIcon type="sync" /> 同步权限
+          </a>
+        </MenuItem>
+        <Menu.Divider />
+        <MenuItem>
+          <a onClick={::this.onShow} >
+            <GoogleMaterialIcon type="settings" /> 个人设置
           </a>
         </MenuItem>
         <Menu.Divider />

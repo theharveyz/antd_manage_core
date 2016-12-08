@@ -29,7 +29,7 @@ class Table extends React.Component {
     handleFetchOptions: React.PropTypes.func,
     pageSizeChanger: React.PropTypes.bool,
     formatSorter: React.PropTypes.func,
-    exportExcel: false
+    exportExcel: React.PropTypes.bool
   };
   state = {
     data: [],
@@ -211,6 +211,7 @@ class Table extends React.Component {
 Table.defaultProps = {
   fetchDataMethodName: 'getAll',
   deleteMethodName: 'delete',
+  exportExcel: false,
   onDataChange: _.noop,
   handleFetchOptions: (v) => v
 };
