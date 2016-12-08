@@ -4,7 +4,6 @@ import DI from '../../di';
 import { Menu, Dropdown, Icon, Modal, message } from 'antd';
 import AccountSetting from '../account-setting/account-setting';
 import GoogleMaterialIcon from '../../components/google-material-icon/google-material-icon';
-import TaskCenter from '../../components/task-center/task-center';
 
 import styles from './account-info.styl';
 
@@ -13,7 +12,8 @@ export default class AccountInfo extends React.Component {
   state = {
     account: [],
     visible: false,
-    intervalId: null
+    intervalId: null,
+    taskVisible: false
   };
 
   componentWillMount() {
@@ -61,15 +61,19 @@ export default class AccountInfo extends React.Component {
     });
   }
 
+  onTaskShow(){
+    DI.get('myTask').show();
+  }
+
   onSyncPermission() {
     DI.get('authHttp').getResource().then((resource) => {
       DI.get('auth').setPermission(resource)
-        .then(()=>{
-        message.success('同步权限成功');
-      })
-        .catch(()=>{
-        message.error('同步权限失败');
-      })
+        .then(() => {
+          message.success('同步权限成功');
+        })
+        .catch(() => {
+          message.error('同步权限失败');
+        })
     });
   }
 
@@ -91,7 +95,9 @@ export default class AccountInfo extends React.Component {
     const menu = (
       <Menu className={styles.menu} >
         <MenuItem>
-          <TaskCenter />
+          <a onClick={::this.onTaskShow} >
+            <GoogleMaterialIcon type="appstore" /> 我的任务
+          </a>
         </MenuItem>
         <Menu.Divider />
         <MenuItem>

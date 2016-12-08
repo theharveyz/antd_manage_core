@@ -29,7 +29,8 @@ class Table extends React.Component {
     handleFetchOptions: React.PropTypes.func,
     pageSizeChanger: React.PropTypes.bool,
     formatSorter: React.PropTypes.func,
-    exportExcel: React.PropTypes.bool
+    exportExcel: React.PropTypes.bool,
+    exportExcelLimit: React.PropTypes.number,
   };
   state = {
     data: [],
@@ -79,11 +80,11 @@ class Table extends React.Component {
       .catch(() => message.success('删除失败'));
   }
 
-  fetchData() {
+  fetchData(showDataLoading) {
     const { httpService, fetchDataMethodName, onDataChange, handleFetchOptions } = this.props;
 
     this.setState({
-      dataLoading: true,
+      dataLoading: showDataLoading === undefined ? true : showDataLoading,
       dataLoadError: false
     });
     httpService[fetchDataMethodName](handleFetchOptions({
@@ -140,12 +141,13 @@ class Table extends React.Component {
       conditionSearch,
       tableProps,
       httpService,
-      exportExcel
+      exportExcel,
+      exportExcelLimit
     } = this.props;
 
     let tableToExcelComponent = null;
 
-    if (exportExcel) {
+    if (exportExcel && pagination.total <= exportExcelLimit && pagination.total > 0) {
       tableToExcelComponent = (
         <TableToExcel
           columns={filterColumns}
@@ -213,6 +215,7 @@ Table.defaultProps = {
   deleteMethodName: 'delete',
   exportExcel: false,
   onDataChange: _.noop,
+  exportExcelLimit:30000,
   handleFetchOptions: (v) => v
 };
 

@@ -4,13 +4,24 @@ import _ from 'lodash';
 import GoogleMaterialIcon from '../google-material-icon/google-material-icon';
 import Table from '../table/table';
 import DI from '../../di';
-import { datetimeFormat } from '../../utils/common';
+import { datetimeFormat, humanizeByColorName } from '../../utils/common';
 
-export default class TaskCenter extends React.Component {
+export default class MyTask extends React.Component {
 
   state = {
     visible: false
-  };
+  }
+
+  componentDidMount() {
+    DI.get('myTask').setTaskComponent(this);
+    if (!this.intervalId) {
+      this.intervalId = setInterval(() => {
+        if (this.state.visible) {
+          this.refs.table.fetchData(false);
+        }
+      }, 5000);
+    }
+  }
 
   onShow() {
     this.setState({
@@ -19,20 +30,20 @@ export default class TaskCenter extends React.Component {
   }
 
   onCancel() {
+    //clearInterval(intervalId);
     this.setState({
-      visible: false,
-      targetKeys: []
+      visible: false
     });
   }
 
   onDownload(id) {
-    DI.get('upExcelHttp')
+    DI.get('excelHttp')
       .get(id)
       .then((url) => {
         window.open(url);
       })
       .catch(() => {
-
+        message.error('下载失败!');
       });
   }
 
@@ -40,39 +51,39 @@ export default class TaskCenter extends React.Component {
     {
       title: '编号',
       dataIndex: 'id',
-      sorter: true,
       show: true,
       draggable: false
     },
     {
       title: '类型',
       dataIndex: 'type',
-      sorter: true,
-      show: true
+      show: true,
+      render: (value) => (
+        humanizeByColorName('TASK_TYPES', value)
+      )
     },
     {
       title: '标题',
       dataIndex: 'title',
-      sorter: true,
       show: true
     },
     {
       title: '状态',
       dataIndex: 'status',
-      sorter: true,
-      show: true
+      show: true,
+      render: (value) => (
+        humanizeByColorName('TASK_STATUS', value)
+      )
     },
     {
       title: '创建时间',
       dataIndex: 'created_at',
-      sorter: true,
-      show: true
+      show: true,
       render: datetimeFormat
     },
     {
       title: '更新时间',
       dataIndex: 'updated_at',
-      sorter: true,
       show: true,
       render: datetimeFormat
     },
@@ -100,28 +111,25 @@ export default class TaskCenter extends React.Component {
         columns: this.columns,
         name
       },
-      httpService: DI.get('upTaskHttp'),
+      httpService: DI.get('myTaskHttp'),
       tableColumnManage: true,
       conditionSearch: false,
       pageSizeChanger: true
     };
 
     return (
-      <a onClick={::this.onShow} >
-        <GoogleMaterialIcon type="appstore" /> 任务中心
-        <Modal
-          title="任务中心"
-          visible={this.state.visible}
-          onCancel={::this.onCancel}
-          width="80%"
-          footer=""
-        >
-          <Table
-            ref="table"
-            {...tableConfigs}
-          />
-        </Modal>
-      </a>
+      <Modal
+        title="任务列表"
+        visible={this.state.visible}
+        onCancel={::this.onCancel}
+        width="80%"
+        footer=""
+      >
+        <Table
+          ref="table"
+          {...tableConfigs}
+        />
+      </Modal>
     );
   }
 }

@@ -1,7 +1,8 @@
 import React from 'react';
-import { Modal, Icon, Transfer, Button, message } from 'antd';
+import { Modal, Icon, Transfer, Button, message, Input, notification } from 'antd';
 import styles from './table-to-excel.styl';
 import _ from 'lodash';
+import DI from '../../di';
 
 export default class TableToExcel extends React.Component {
 
@@ -15,7 +16,9 @@ export default class TableToExcel extends React.Component {
   state = {
     visible: false,
     exporting: false,
-    targetKeys: []
+    taskVisible: false,
+    targetKeys: [],
+    title: '将表格数据转换为excel文件'
   };
 
   onShow() {
@@ -37,6 +40,22 @@ export default class TableToExcel extends React.Component {
     });
   }
 
+  onBlur(e) {
+    this.setState({
+      title: e.target.value
+    });
+  }
+
+  onTaskShow() {
+    DI.get('myTask').show();
+  }
+
+  onTaskCancel() {
+    this.setState({
+      taskVisible: false
+    });
+  }
+
   onOk() {
     const columns = [];
     _.each(this.props.columns, (column) => {
@@ -52,18 +71,26 @@ export default class TableToExcel extends React.Component {
     });
     this.props.httpService.addTableToExcelTask(
       {
+        title: this.state.title,
         columns
       },
       this.props.queryString
     ).then(() => {
-      message.success('导出excel任务创建成功，可在任务中心中查看进度!');
+      notification.success({
+        message: '任务提醒',
+        description: (
+          <div>
+            任务 "{this.state.title}" 创建成功，可在 <a onClick={::this.onTaskShow} >我的任务中</a> 查看进度
+          </div>
+        )
+      })
       this.setState({
         exporting: false
       }, () => {
         this.onCancel();
       });
-    }).catch(() => {
-      message.success('导出excel任务创建失败');
+    }).catch((e) => {
+      message.error('导出excel任务创建失败');
       this.setState({
         exporting: false
       });
@@ -88,7 +115,7 @@ export default class TableToExcel extends React.Component {
           <Icon type="export" />
         </a>
         <Modal
-          title={`导出 ${this.props.dataCount} 条数据为excel文件`}
+          title={`导出 ${this.props.dataCount} 条数据转换为excel文件`}
           visible={this.state.visible}
           onCancel={::this.onCancel}
           onOk={::this.onOk}
@@ -97,7 +124,7 @@ export default class TableToExcel extends React.Component {
         >
           <Transfer
             dataSource={dataSource}
-            titles={['可选字段', '已选字段']}
+            titles={['可转换字段', '已选字段']}
             targetKeys={this.state.targetKeys}
             render={item => item.title}
             showSearch
@@ -107,14 +134,21 @@ export default class TableToExcel extends React.Component {
               height: 400
             }}
           />
+          <div className={styles.title} >
+            <Input
+              addonBefore="任务标题:"
+              defaultValue={this.state.title}
+              onBlur={::this.onBlur}
+            />
+          </div>
           <Button
             className={styles.export}
             type="primary"
             onClick={::this.onOk}
-            disabled={!this.state.targetKeys.length}
+            disabled={!this.state.targetKeys.length || !this.state.title}
             loading={this.state.exporting}
           >
-            {this.state.exporting ? '提交中' : '添加导出任务'}
+            {this.state.exporting ? '提交中' : '添加任务'}
           </Button>
         </Modal>
       </div>
