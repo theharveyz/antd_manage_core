@@ -10,6 +10,8 @@ export default class TableToExcel extends React.Component {
     columns: React.PropTypes.array.isRequired,
     httpService: React.PropTypes.object.isRequired,
     dataCount: React.PropTypes.number,
+    total: React.PropTypes.number,
+    limit: React.PropTypes.number,
     queryString: React.PropTypes.string
   };
 
@@ -18,7 +20,7 @@ export default class TableToExcel extends React.Component {
     exporting: false,
     taskVisible: false,
     targetKeys: [],
-    title: '将表格数据转换为excel文件'
+    title: ''
   };
 
   onShow() {
@@ -109,47 +111,69 @@ export default class TableToExcel extends React.Component {
       }
     });
 
+    let transferComponent = (
+      <div>
+        <Transfer
+          dataSource={dataSource}
+          titles={['可转换字段', '已选字段']}
+          targetKeys={this.state.targetKeys}
+          render={item => item.title}
+          showSearch
+          onChange={::this.onChange}
+          listStyle={{
+            width: 270,
+            height: 400
+          }}
+        />
+        <div className={styles.title} >
+          <Input
+            addonBefore="任务名称:"
+            defaultValue={this.state.title}
+            onBlur={::this.onBlur}
+          />
+        </div>
+        <Button
+          className={styles.export}
+          type="primary"
+          onClick={::this.onOk}
+          disabled={!this.state.targetKeys.length || !this.state.title}
+          loading={this.state.exporting}
+        >
+          {this.state.exporting ? '提交中' : '添加任务'}
+        </Button>
+      </div>
+    );
+
+    if (this.props.total === 0) {
+      transferComponent = (
+        <div className={styles.error}>
+          暂无数据导出
+        </div>
+      )
+    }
+
+    if (this.props.total > this.props.limit) {
+      transferComponent = (
+        <div className={styles.error} >
+          导出的数据超出最大限制 {this.props.limit} 条
+        </div>
+      )
+    }
+
     return (
       <div className={styles.container} >
         <a className={styles['export-icon']} onClick={::this.onShow} >
           <Icon type="export" />
         </a>
         <Modal
-          title={`导出 ${this.props.dataCount} 条数据转换为excel文件`}
+          title={`共 ${this.props.dataCount} 条数据可导出`}
           visible={this.state.visible}
           onCancel={::this.onCancel}
           onOk={::this.onOk}
           width={620}
           footer=""
         >
-          <Transfer
-            dataSource={dataSource}
-            titles={['可转换字段', '已选字段']}
-            targetKeys={this.state.targetKeys}
-            render={item => item.title}
-            showSearch
-            onChange={::this.onChange}
-            listStyle={{
-              width: 270,
-              height: 400
-            }}
-          />
-          <div className={styles.title} >
-            <Input
-              addonBefore="任务标题:"
-              defaultValue={this.state.title}
-              onBlur={::this.onBlur}
-            />
-          </div>
-          <Button
-            className={styles.export}
-            type="primary"
-            onClick={::this.onOk}
-            disabled={!this.state.targetKeys.length || !this.state.title}
-            loading={this.state.exporting}
-          >
-            {this.state.exporting ? '提交中' : '添加任务'}
-          </Button>
+          {transferComponent}
         </Modal>
       </div>
     );

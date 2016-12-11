@@ -24,6 +24,9 @@ export default class MyTask extends React.Component {
   }
 
   onShow() {
+    if (this.refs.table) {
+      this.refs.table.fetchData();
+    }
     this.setState({
       visible: true
     });

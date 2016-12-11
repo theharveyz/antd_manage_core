@@ -147,13 +147,15 @@ class Table extends React.Component {
 
     let tableToExcelComponent = null;
 
-    if (exportExcel && pagination.total <= exportExcelLimit && pagination.total > 0) {
+    if (exportExcel) {
       tableToExcelComponent = (
         <TableToExcel
           columns={filterColumns}
           httpService={httpService}
           dataCount={pagination.total}
           queryString={queryString}
+          limit={exportExcelLimit}
+          total={pagination.total}
         />
       );
     }
@@ -165,7 +167,7 @@ class Table extends React.Component {
           onColumnsChange={::this.onColumnsChange}
         />
         {tableToExcelComponent}
-        <a className={styles.reload} onClick={::this.fetchData} >
+        <a className={styles.reload} onClick={() => this.fetchData()} >
           <Icon type="reload" />
         </a>
       </div>
@@ -215,7 +217,7 @@ Table.defaultProps = {
   deleteMethodName: 'delete',
   exportExcel: false,
   onDataChange: _.noop,
-  exportExcelLimit:30000,
+  exportExcelLimit: 30000,
   handleFetchOptions: (v) => v
 };
 
