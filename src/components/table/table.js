@@ -46,7 +46,9 @@ class Table extends React.Component {
 
   componentDidMount() {
     this.state.query = generateQuery({ pagination: { pageSize: this.props.pageSize } });
-    this.fetchData();
+    if (!this.props.conditionSearch) {
+      this.fetchData();
+    }
   }
 
   onColumnsChange(e) {

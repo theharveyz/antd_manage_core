@@ -143,3 +143,12 @@ export const formDecimalValidator = (rule, value, callback) => {
 };
 
 export const getColorByNum = (num) => DI.get('COLORS')[num % DI.get('COLORS').length];
+
+export const queryInjectCondition = (query, condition) => {
+  _.each(query, (value, key) => {
+    const currentCondition = _.find(condition, { operationValue: key });
+    if (currentCondition) {
+      currentCondition.value = value;
+    }
+  })
+}

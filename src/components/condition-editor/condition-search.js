@@ -52,6 +52,10 @@ class ConditionSearch extends React.Component {
     this.setInputConditions(this.props.conditions);
   }
 
+  componentDidMount() {
+    this.onSearchProxy();
+  }
+
   onShow() {
     this.setState({
       visible: true
