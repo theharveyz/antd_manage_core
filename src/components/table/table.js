@@ -37,7 +37,7 @@ class Table extends React.Component {
   state = {
     data: [],
     pagination: {},
-    query: {},
+    query: generateQuery({ pagination: { pageSize: this.props.pageSize } }),
     queryString: '',
     filterColumns: [],
     visible: false,
@@ -47,7 +47,6 @@ class Table extends React.Component {
   };
 
   componentDidMount() {
-    this.state.query = generateQuery({ pagination: { pageSize: this.props.pageSize } });
     if (!this.props.conditionSearch) {
       this.fetchData();
     }
