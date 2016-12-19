@@ -31,6 +31,8 @@ class Table extends React.Component {
     formatSorter: React.PropTypes.func,
     exportExcel: React.PropTypes.bool,
     exportExcelLimit: React.PropTypes.number,
+    exportExcelMethodName: React.PropTypes.string,
+    handleExportExcelOptions: React.PropTypes.func
   };
   state = {
     data: [],
@@ -158,6 +160,8 @@ class Table extends React.Component {
           queryString={queryString}
           limit={exportExcelLimit}
           total={pagination.total}
+          handleExportExcelOptions={this.props.handleExportExcelOptions}
+          exportExcelMethodName={this.props.exportExcelMethodName}
         />
       );
     }
@@ -220,7 +224,9 @@ Table.defaultProps = {
   exportExcel: false,
   onDataChange: _.noop,
   exportExcelLimit: 30000,
-  handleFetchOptions: (v) => v
+  handleFetchOptions: (v) => v,
+  handleExportExcelOptions: (v) => v,
+  exportExcelMethodName: 'addTableToExcelTask'
 };
 
 export default Table;

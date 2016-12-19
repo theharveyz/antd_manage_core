@@ -12,7 +12,9 @@ export default class TableToExcel extends React.Component {
     dataCount: React.PropTypes.number,
     total: React.PropTypes.number,
     limit: React.PropTypes.number,
-    queryString: React.PropTypes.string
+    queryString: React.PropTypes.string,
+    exportExcelMethodName: React.PropTypes.string,
+    handleExportExcelOptions: React.PropTypes.func
   };
 
   state = {
@@ -42,7 +44,7 @@ export default class TableToExcel extends React.Component {
     });
   }
 
-  onBlur(e) {
+  onTitleChange(e) {
     this.setState({
       title: e.target.value
     });
@@ -71,11 +73,11 @@ export default class TableToExcel extends React.Component {
     this.setState({
       exporting: true
     });
-    this.props.httpService.addTableToExcelTask(
-      {
+    this.props.httpService[this.props.exportExcelMethodName](
+      this.props.handleExportExcelOptions({
         title: this.state.title,
         columns
-      },
+      }),
       this.props.queryString
     ).then(() => {
       notification.success({
@@ -129,7 +131,7 @@ export default class TableToExcel extends React.Component {
           <Input
             addonBefore="任务名称:"
             defaultValue={this.state.title}
-            onBlur={::this.onBlur}
+            onChange={::this.onTitleChange}
           />
         </div>
         <Button
@@ -146,7 +148,7 @@ export default class TableToExcel extends React.Component {
 
     if (this.props.total === 0) {
       transferComponent = (
-        <div className={styles.error}>
+        <div className={styles.error} >
           暂无数据导出
         </div>
       )
