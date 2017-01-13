@@ -88,7 +88,7 @@ export default class Login extends React.Component {
     const { form, modal } = this.props;
     const getFieldDecorator = form.getFieldDecorator;
     const { loading, inputCodeMode } = this.state;
-
+    const logoUrl = DI.get('config').get('manage.logo');
     const inputNumberStyle = { width: '105px' };
     let codeComponent;
 
@@ -132,7 +132,7 @@ export default class Login extends React.Component {
     return (
       <div className={styles.container} >
         <div className={styles.logo} >
-          <img role="presentation" width="150" src="https://www.bmqb.com/images/logo.cc03.png" />
+          <img role="presentation" width="150" src={logoUrl} />
         </div>
         <Form horizontal onSubmit={::this.handleSubmit} >
           <FormItem
