@@ -25,6 +25,12 @@ export const currencyFormat = (value, digit = 2) => {
   return `￥ ${numeral(value).format(format)}`;
 };
 
+export const percentFormat = (value, digit) => {
+  let d = 2;
+  if (_.isNumber(digit)) d = digit
+  return `${ (value * 100).toFixed(d)} %`;
+};
+
 export const isBooleanTrue = (value) => (
   typeof(value) === 'boolean' && value === true
 );
