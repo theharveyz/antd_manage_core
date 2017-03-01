@@ -151,6 +151,13 @@ export const formDecimalValidator = (rule, value, callback) => {
 export const getColorByNum = (num) => DI.get('COLORS')[num % DI.get('COLORS').length];
 
 export const queryInjectCondition = (query, condition) => {
+  // reset value to undefined to prevent caching last condition value
+  _.each(condition, (item) => {
+    if(item.operationValue) {
+      item.value = undefined;
+    }
+  });
+  
   _.each(query, (value, key) => {
     const currentCondition = _.find(condition, { operationValue: key });
     if (currentCondition) {
