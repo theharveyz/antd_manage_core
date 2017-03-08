@@ -134,7 +134,7 @@ export default class Login extends React.Component {
         <div className={styles.logo} >
           <img role="presentation" width="150" src="https://www.bmqb.com/images/logo.cc03.png" />
         </div>
-        <Form horizontal onSubmit={::this.handleSubmit} >
+        <Form layout={'horizontal'} onSubmit={::this.handleSubmit} >
           <FormItem
             {...formItemLayout}
             label="手机号："

@@ -31,7 +31,7 @@ class ConditionTreeExtra extends React.Component {
     const wrapperCol = { span: 16 };
     const saveContent = (
       <div>
-        <Form horizontal >
+        <Form layout={'horizontal'} >
           <FormItem
             label="组名："
             labelCol={labelCol}

@@ -91,7 +91,7 @@ class ConditionInput extends React.Component {
     }
 
     return (
-      <Form inline >
+      <Form layout={'inline'} >
         <FormItem label={text} >
           <ConditionPredicateSelect
             uuid={uuid}
