@@ -55,7 +55,7 @@ class ConditionDate extends React.Component {
       dateDisabled = true;
     }
     return (
-      <Form inline >
+      <Form layout={'inline'} >
         <FormItem label={text} >
           <ConditionPredicateSelect
             uuid={uuid}

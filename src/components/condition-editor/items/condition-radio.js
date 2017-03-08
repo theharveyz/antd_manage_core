@@ -69,7 +69,7 @@ class ConditionRadio extends React.Component {
     const { value, text, values, form, predicate, predicateOnChange, uuid } = this.props;
 
     return (
-      <Form inline >
+      <Form layout={'inline'} >
         <FormItem label={text} >
           <ConditionPredicateSelect
             uuid={uuid}

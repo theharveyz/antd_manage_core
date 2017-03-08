@@ -40,7 +40,7 @@ class ConditionCustomItem extends React.Component {
     const customRender = this.state.render;
 
     return (
-      <Form inline >
+      <Form layout={'inline'} >
         <FormItem label={text} >
           <ConditionPredicateSelect
             uuid={uuid}
