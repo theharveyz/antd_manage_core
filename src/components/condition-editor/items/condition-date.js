@@ -18,7 +18,8 @@ class ConditionDate extends React.Component {
     onChange: React.PropTypes.func,
     onDelete: React.PropTypes.func,
     predicateOnChange: React.PropTypes.func,
-    excludePredicates: React.PropTypes.array
+    excludePredicates: React.PropTypes.array,
+    showTime: React.PropTypes.bool
   };
 
   static defaultExcludePredicates = [$LIKE, $IN, $NOT_IN];
@@ -34,10 +35,14 @@ class ConditionDate extends React.Component {
   }
 
   onChangeProxy(value) {
-    const { uuid, onChange } = this.props;
+    const { uuid, onChange, showTime } = this.props;
     let DateValue = value;
     if (value) {
-      DateValue = moment(value).format('YYYY-MM-DD');
+      if (showTime) {
+        DateValue = moment(value).format('YYYY-MM-DD HH:mm:ss');
+      } else {
+        DateValue = moment(value).format('YYYY-MM-DD');
+      }
     }
     onChange({ value: DateValue, uuid });
   }
@@ -48,11 +53,14 @@ class ConditionDate extends React.Component {
   }
 
   render() {
-    const { text, value, form, predicate, predicateOnChange, uuid } = this.props;
-    const showTime = false;
+    const { text, value, form, predicate, predicateOnChange, uuid, showTime } = this.props;
     let dateDisabled = false;
     if (predicate === $IS_NOT_NULL || predicate === $IS_NULL) {
       dateDisabled = true;
+    }
+    let format = 'YYYY-MM-DD';
+    if (showTime) {
+      format = 'YYYY-MM-DD HH:mm:ss';
     }
     return (
       <Form layout={'inline'} >
@@ -70,7 +78,7 @@ class ConditionDate extends React.Component {
           })(
             <DatePicker
               showTime={showTime}
-              format="YYYY-MM-DD"
+              format={format}
               onChange={::this.onChangeProxy}
               disabled={dateDisabled}
             />
