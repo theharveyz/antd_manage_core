@@ -75,7 +75,7 @@ export default class PermissionResource extends React.Component {
       httpService: DI.get('permissionHttp'),
       tableColumnManage: true,
       fetchDataMethodName: 'getAllResources',
-      pageSize: 1000000
+      pageSize: 100
     };
 
     return (
