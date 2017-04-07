@@ -8,6 +8,8 @@ export const stringToCamelCase = (string) => (
   string.replace(/[-_][^-_]/g, (match) => match.charAt(1).toUpperCase())
 );
 
+export const stringToUnderlineCase = (s) => s.replace(/([A-Z])/g,"_$1").toLowerCase()
+
 export const generateUUID = () => {
   let d = new Date().getTime();
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
@@ -16,6 +18,7 @@ export const generateUUID = () => {
     return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
   });
 };
+
 
 export const currencyFormat = (value, digit = 2) => {
   let format = _.padEnd('0,0.', 6, '0');
@@ -157,7 +160,7 @@ export const queryInjectCondition = (query, condition) => {
       item.value = undefined;
     }
   });
-  
+
   _.each(query, (value, key) => {
     const currentCondition = _.find(condition, { operationValue: key });
     if (currentCondition) {
