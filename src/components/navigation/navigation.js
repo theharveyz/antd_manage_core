@@ -105,6 +105,10 @@ class Navigation extends React.Component {
         <span>{name}</span>
       );
     }
+    
+    if (config.hide) {
+      return null;
+    }
 
     return (
       <Menu.Item key={path} >
