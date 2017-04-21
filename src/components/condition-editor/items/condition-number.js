@@ -15,6 +15,7 @@ class ConditionNumber extends React.Component {
     value: React.PropTypes.any,
     form: React.PropTypes.object,
     predicate: React.PropTypes.string,
+    subConfig: React.PropTypes.object,
     uuid: React.PropTypes.string,
     onChange: React.PropTypes.func,
     onDelete: React.PropTypes.func,
@@ -38,6 +39,20 @@ class ConditionNumber extends React.Component {
     onChange({ value: form.getFieldValue(uuid), uuid });
   }
 
+  onTextareaChangeProxy() {
+    const { uuid, form, onChange } = this.props;
+    const fieldValue = form.getFieldValue(uuid);
+    let values = fieldValue;
+    if (fieldValue && typeof fieldValue === 'string') {
+        let fieldValues = fieldValue.replace(/\r\n/g, ',').replace(/\n/g, ',');
+        fieldValues = fieldValues.replace(/\s/g, ',').split(',');
+        values = _.remove(fieldValues, function(n) {
+            return n;
+        });
+    }
+    onChange({ value: values, uuid });
+  }
+
   onDeleteProxy() {
     const { uuid, onDelete } = this.props;
     onDelete({ uuid });
@@ -49,7 +64,7 @@ class ConditionNumber extends React.Component {
   }
 
   render() {
-    const { text, value, form, predicate, predicateOnChange, uuid } = this.props;
+    const { text, value, form, predicate, predicateOnChange, uuid, subConfig } = this.props;
     const tagsMode = true;
     const selectStyle = {
       width: '100%',
@@ -59,29 +74,38 @@ class ConditionNumber extends React.Component {
     const firstOptionDisabled = true;
 
     let inputForm;
-
     if (predicate === $IN || predicate === $NOT_IN) {
-      inputForm = form.getFieldDecorator(uuid, {
-        initialValue: value
-      })(
-        <Select
-          style={selectStyle}
-          tags={tagsMode}
-          onChange={::this.onSelectChange}
-        >
-          <Option
-            disabled={firstOptionDisabled}
-            value={firstOptionContent}
+      const showTextarea = subConfig &&
+          (subConfig.typeFor$IN === 'textarea' || subConfig.typeFor$NOT_IN === 'textarea');
+      if (showTextarea) {
+        inputForm = form.getFieldDecorator(uuid, {
+          initialValue: value
+        })(
+            < Input type="textarea" onBlur={::this.onTextareaChangeProxy} rows={1} />
+        );
+      } else {
+        inputForm = form.getFieldDecorator(uuid, {
+            initialValue: value
+        })(
+          <Select
+            style={selectStyle}
+            tags={tagsMode}
+            onChange={::this.onSelectChange}
           >
-            {firstOptionContent}
-          </Option>
-        </Select>
-      );
+            <Option
+              disabled={firstOptionDisabled}
+              value={firstOptionContent}
+            >
+              {firstOptionContent}
+            </Option >
+          </Select>
+        );
+      }
     } else {
       inputForm = form.getFieldDecorator(uuid, {
         initialValue: value
       })(
-        <Input onBlur={::this.onChangeProxy} />
+        <Input onBlur={::this.onChangeProxy} / >
       );
     }
 
