@@ -13,6 +13,7 @@ class ConditionDate extends React.Component {
     text: React.PropTypes.string,
     value: React.PropTypes.any,
     form: React.PropTypes.object,
+    subConfig: React.PropTypes.object,
     predicate: React.PropTypes.string,
     uuid: React.PropTypes.string,
     onChange: React.PropTypes.func,
@@ -34,17 +35,19 @@ class ConditionDate extends React.Component {
     );
   }
 
-  onChangeProxy(value) {
-    const { uuid, onChange, showTime } = this.props;
-    let DateValue = value;
+  onChangeProxy(value, dateString) {
+    const { uuid, onChange, subConfig } = this.props;
+    let dateValue = _.cloneDeep(value);
     if (value) {
-      if (showTime) {
-        DateValue = moment(value).format('YYYY-MM-DD HH:mm:ss');
+      if (subConfig && subConfig.returnUtcSeconds) {
+        dateValue = Math.floor(dateValue.valueOf()/1000);
+      } else if (subConfig && subConfig.showTime) {
+        dateValue = moment(value).format('YYYY-MM-DD HH:mm:ss');
       } else {
-        DateValue = moment(value).format('YYYY-MM-DD');
+        dateValue = moment(value).format('YYYY-MM-DD');
       }
     }
-    onChange({ value: DateValue, uuid });
+    onChange({ value: dateValue, uuid });
   }
 
   onDeleteProxy() {
@@ -53,15 +56,20 @@ class ConditionDate extends React.Component {
   }
 
   render() {
-    const { text, value, form, predicate, predicateOnChange, uuid, showTime } = this.props;
+    const { text, form, predicate, predicateOnChange, uuid, subConfig } = this.props;
+    let { value } = this.props;
     let dateDisabled = false;
     if (predicate === $IS_NOT_NULL || predicate === $IS_NULL) {
       dateDisabled = true;
     }
     let format = 'YYYY-MM-DD';
-    if (showTime) {
+    if (subConfig && subConfig.showTime) {
       format = 'YYYY-MM-DD HH:mm:ss';
     }
+    if (subConfig && subConfig.returnUtcSeconds && value) {
+      value = value * 1000
+    }
+
     return (
       <Form layout={'inline'} >
         <FormItem label={text} >
@@ -77,7 +85,7 @@ class ConditionDate extends React.Component {
             initialValue: value ? moment(value) : value
           })(
             <DatePicker
-              showTime={showTime}
+              showTime={subConfig && subConfig.showTime}
               format={format}
               onChange={::this.onChangeProxy}
               disabled={dateDisabled}

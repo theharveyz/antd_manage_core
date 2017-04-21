@@ -1,5 +1,6 @@
 import React from 'react';
 import antd from 'antd';
+import qs from 'qs';
 import { generatePagination, generateQuery } from '../../utils/ant-table';
 import ConditionSearch from '../condition-editor/condition-search';
 import TableColumnManage from '../table-column-manage/table-column-manage';
@@ -24,6 +25,7 @@ class Table extends React.Component {
     formatConditionQuery: React.PropTypes.func,
     fetchDataMethodName: React.PropTypes.string,
     deleteMethodName: React.PropTypes.string,
+    qsFormatSearchQuery: React.PropTypes.bool,
     pageSize: React.PropTypes.number,
     onDataChange: React.PropTypes.func,
     handleFetchOptions: React.PropTypes.func,
@@ -60,11 +62,19 @@ class Table extends React.Component {
 
   onSearch(e) {
     const { query } = this.state;
+    const { qsFormatSearchQuery, formatConditionQuery } = this.props;
     query.offset = 0;
     let conditionQuery = e.value.conditionQuery;
-    if (this.props.formatConditionQuery) {
-      conditionQuery = this.props.formatConditionQuery(e.value.conditionResult);
+
+    if (formatConditionQuery && qsFormatSearchQuery) {
+      conditionQuery = formatConditionQuery(e.value.conditionResult);
+      conditionQuery = `${conditionQuery}&${this.qsFormatSearchQuery(e.value.conditionResult)}`;
+    } else if (qsFormatSearchQuery) {
+      conditionQuery = this.qsFormatSearchQuery(e.value.conditionResult);
+    } else if (formatConditionQuery) {
+      conditionQuery = formatConditionQuery(e.value.conditionResult);
     }
+
     this.setState({
       queryString: conditionQuery,
       query
@@ -126,6 +136,10 @@ class Table extends React.Component {
     }, () => {
       this.fetchData();
     });
+  }
+
+  qsFormatSearchQuery (queryObj) {
+    return `conditions=${encodeURIComponent(qs.stringify({ conditions: queryObj }))}`;
   }
 
   render() {

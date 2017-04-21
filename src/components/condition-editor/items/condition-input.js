@@ -14,6 +14,7 @@ class ConditionInput extends React.Component {
     text: React.PropTypes.string,
     value: React.PropTypes.any,
     form: React.PropTypes.object,
+    subConfig: React.PropTypes.object,
     predicate: React.PropTypes.string,
     uuid: React.PropTypes.string,
     onChange: React.PropTypes.func,
@@ -33,6 +34,20 @@ class ConditionInput extends React.Component {
     );
   }
 
+  onTextareaChangeProxy() {
+    const { uuid, form, onChange } = this.props;
+    const fieldValue = form.getFieldValue(uuid);
+    let values = fieldValue;
+    if (fieldValue && typeof fieldValue === 'string') {
+      let fieldValues = fieldValue.replace(/\r\n/g, ',').replace(/\n/g, ',');
+      fieldValues = fieldValues.replace(/\s/g, ',').split(',');
+      values = _.remove(fieldValues, function(n) {
+        return n;
+      });
+    }
+    onChange({ value: values, uuid });
+  }
+
   onChangeProxy() {
     const { uuid, form, onChange } = this.props;
     onChange({ value: form.getFieldValue(uuid), uuid });
@@ -49,7 +64,7 @@ class ConditionInput extends React.Component {
   }
 
   render() {
-    const { text, value, form, predicate, predicateOnChange, uuid } = this.props;
+    const { text, value, form, predicate, predicateOnChange, uuid, subConfig } = this.props;
     const tagsMode = true;
     const selectStyle = {
       width: '100%',
@@ -62,31 +77,40 @@ class ConditionInput extends React.Component {
     if (predicate === $IS_NOT_NULL || predicate === $IS_NULL) {
       inputDisabled = true;
     }
-    let inputForm = form.getFieldDecorator(uuid, {
-      initialValue: value
-    })(
-      <Input
-        onBlur={::this.onChangeProxy}
-        disabled={inputDisabled}
-      />
-    );
 
+    let inputForm;
     if (predicate === $IN || predicate === $NOT_IN) {
+      const showTextarea = subConfig &&
+        (subConfig.typeFor$IN === 'textarea' || subConfig.typeFor$NOT_IN === 'textarea');
+      if (showTextarea) {
+        inputForm = form.getFieldDecorator(uuid, {
+          initialValue: value
+        })(
+          <Input type="textarea" onBlur={::this.onTextareaChangeProxy} rows={1} />
+        );
+      } else {
+        inputForm = form.getFieldDecorator(uuid, {
+          initialValue: value
+        })(
+          <Select
+            style={selectStyle}
+            tags={tagsMode}
+            onChange={::this.onSelectChange}
+          >
+            <Option
+              disabled={firstOptionDisabled}
+              value={firstOptionContent}
+            >
+              {firstOptionContent}
+            </Option>
+          </Select>
+        );
+      }
+    } else {
       inputForm = form.getFieldDecorator(uuid, {
         initialValue: value
       })(
-        <Select
-          style={selectStyle}
-          tags={tagsMode}
-          onChange={::this.onSelectChange}
-        >
-          <Option
-            disabled={firstOptionDisabled}
-            value={firstOptionContent}
-          >
-            {firstOptionContent}
-          </Option>
-        </Select>
+        <Input onBlur={::this.onChangeProxy} />
       );
     }
 
