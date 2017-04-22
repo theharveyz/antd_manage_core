@@ -6,10 +6,36 @@
   overflow-y: auto;
   width: 220px;
   border-right: 1px solid #e9e9e9;
-  .ant-menu-inline {
+  transition all 0.5s;
+
+  :global(.ant-menu-inline) {
     border-right: none;
+    opacity 1;
+    transition all 0.5s;
   }
+
   span {
     border-bottom: 1px dashed #ff0000;
+  }
+
+  .toggleDiv {
+    height 20px;
+    cursor pointer;
+  }
+
+  .toggleIcon {
+    position absolute
+    right 15px
+    top: 5px
+    z-index 100
+    &.toggled {
+      right 5px
+    }
+  }
+  &.toggle {
+    width 20px !important;
+    :global(.ant-menu-inline) {
+      opacity 0;
+    }
   }
 }

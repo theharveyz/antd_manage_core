@@ -3,10 +3,13 @@ import Header from '../header/header';
 import Birthday from '../../components/birthday/birtyday';
 import styles from './main.styl';
 
-function Main({ children }) {
+function Main({ children, toggle }) {
+  console.log(toggle, 'propTypes');
   return (
-    <section className={styles.container} >
-      <Header />
+    <section
+      className={ toggle ? `${styles.container} ${styles.toggle}` : styles.container}
+    >
+      <Header toggle={toggle} />
       <div className={styles.children} >
         {children}
       </div>
@@ -16,6 +19,7 @@ function Main({ children }) {
 }
 
 Main.propTypes = {
+  toggle: React.PropTypes.bool,
   children: React.PropTypes.node
 };
 
