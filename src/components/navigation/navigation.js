@@ -1,23 +1,32 @@
 import React from 'react';
 import _ from 'lodash';
 import { Link } from 'react-router';
-import { Menu } from 'antd';
+import { Menu, Icon } from 'antd';
 import styles from './navigation.styl';
 import DI from '../../di';
 
 class Navigation extends React.Component {
 
   static contextTypes = {
-    router: React.PropTypes.object
+    router: React.PropTypes.object,
+    onToggle: React.PropTypes.func,
+    toggle: React.PropTypes.bool
   };
 
   state = {
     current: [],
     configs: [],
-    openKeys: []
+    openKeys: [],
+    iconToggle: ''
   };
 
+  componentWillReceiveProps(nextProps) {
+    const { toggle } = nextProps;
+    this.toggleIconType(!toggle);
+  }
+
   componentDidMount() {
+
     this.getNavigation();
 
     DI.get('auth').listenPermissionChange(() => {
@@ -105,7 +114,7 @@ class Navigation extends React.Component {
         <span>{name}</span>
       );
     }
-    
+
     if (config.hide) {
       return null;
     }
@@ -117,15 +126,38 @@ class Navigation extends React.Component {
     );
   }
 
+  toggleIconType(toggle) {
+    setTimeout(() => {
+        this.setState({
+            iconToggle: !toggle
+        });
+    }, 500); // make icon change after 0.5s to compatible with css
+  }
+
+  toggleNavigation() {
+    const { onToggle, toggle } = this.props;
+    this.toggleIconType(toggle);
+    if (onToggle) {
+      onToggle(!toggle);
+    }
+  }
+
   parseConfigs(configs) {
     return _.map(configs, (config) => this.parseConfig(config));
   }
 
   render() {
-    const { configs, current, openKeys } = this.state;
+    const { configs, current, openKeys, iconToggle } = this.state;
+    const { toggle } = this.props;
     const navigation = this.parseConfigs(configs);
     return (
-      <aside className={styles.container} >
+      <aside className={ toggle ? `${styles.container} ${styles.toggle}` : styles.container } >
+        <div className={styles.toggleDiv} onClick={::this.toggleNavigation}>
+          <Icon
+            type={ iconToggle ? 'double-right' : 'double-left' }
+            className={ iconToggle ? `${styles.toggleIcon} ${styles.toggled}` : styles.toggleIcon}
+          />
+        </div>
         <Menu
           onClick={this.handleClick}
           openKeys={openKeys}
