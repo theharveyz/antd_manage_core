@@ -35,7 +35,7 @@ class ConditionDate extends React.Component {
     );
   }
 
-  onChangeProxy(value, dateString) {
+  onChangeProxy(value) {
     const { uuid, onChange, subConfig } = this.props;
     let dateValue = _.cloneDeep(value);
     if (value) {
