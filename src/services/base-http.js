@@ -1,4 +1,5 @@
 import urijs from 'urijs';
+import DI from '../di';
 import { HTTP_GET, HTTP_POST, HTTP_PUT, HTTP_PATCH } from '../constants/http';
 import 'whatwg-fetch';
 import {
@@ -15,7 +16,7 @@ export default class BaseHttp {
   defaultOptions = {
     method: HTTP_GET,
     mode: 'cors',
-    timeout: 5000
+    timeout: DI.get('config').get('core.httpRequst.timeout') || 5000
   };
 
   save(data, primaryKey = 'id') {
