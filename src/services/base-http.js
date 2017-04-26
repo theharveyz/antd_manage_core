@@ -1,5 +1,5 @@
 import urijs from 'urijs';
-import { HTTP_GET, HTTP_POST, HTTP_PUT } from '../constants/http';
+import { HTTP_GET, HTTP_POST, HTTP_PUT, HTTP_PATCH } from '../constants/http';
 import 'whatwg-fetch';
 import {
   httpGet,
@@ -111,7 +111,7 @@ export default class BaseHttp {
       uri.addSearch(fetchOptions.query);
     }
 
-    if (fetchOptions.method === HTTP_POST || fetchOptions.method === HTTP_PUT) {
+    if ([HTTP_POST, HTTP_PUT, HTTP_PATCH].indexOf(fetchOptions.method) !== -1) {
       fetchOptions.headers = {
         Accept: 'application/json',
         'Content-Type': 'application/json'
