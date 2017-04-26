@@ -1,5 +1,13 @@
 import DI from '../di';
-import { HTTP_GET, HTTP_DELETE, HTTP_POST, HTTP_PUT } from '../constants/http';
+import {
+  HTTP_GET,
+  HTTP_DELETE,
+  HTTP_POST,
+  HTTP_PUT,
+  HTTP_PATCH,
+  HTTP_HEAD,
+  HTTP_OPTIONS,
+} from '../constants/http';
 
 const request = (method) => (takeManageToken) => (target, prop, descriptor) => {
   const d = descriptor;
@@ -26,4 +34,7 @@ export const httpGet = request(HTTP_GET);
 export const httpPost = request(HTTP_POST);
 export const httpPut = request(HTTP_PUT);
 export const httpDelete = request(HTTP_DELETE);
+export const httpPatch = request(HTTP_PATCH);
+export const httpHead = request(HTTP_HEAD);
+export const httpOptions = request(HTTP_OPTIONS);
 

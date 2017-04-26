@@ -1,5 +1,6 @@
 import urijs from 'urijs';
-import { HTTP_GET, HTTP_POST, HTTP_PUT } from '../constants/http';
+import DI from '../di';
+import { HTTP_GET, HTTP_POST, HTTP_PUT, HTTP_PATCH } from '../constants/http';
 import 'whatwg-fetch';
 import {
   httpGet,
@@ -15,7 +16,7 @@ export default class BaseHttp {
   defaultOptions = {
     method: HTTP_GET,
     mode: 'cors',
-    timeout: 5000
+    timeout: DI.get('config').get('core.httpRequst.timeout') || 5000
   };
 
   save(data, primaryKey = 'id') {
@@ -111,7 +112,7 @@ export default class BaseHttp {
       uri.addSearch(fetchOptions.query);
     }
 
-    if (fetchOptions.method === HTTP_POST || fetchOptions.method === HTTP_PUT) {
+    if ([HTTP_POST, HTTP_PUT, HTTP_PATCH].indexOf(fetchOptions.method) !== -1) {
       fetchOptions.headers = {
         Accept: 'application/json',
         'Content-Type': 'application/json'
