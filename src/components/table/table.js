@@ -156,11 +156,12 @@ class Table extends React.Component {
       conditionSearchConfigs,
       tableColumnManage,
       conditionSearch,
-      tableProps,
       httpService,
       exportExcel,
       exportExcelLimit
     } = this.props;
+
+    let { tableProps }= this.props;
 
     let tableToExcelComponent = null;
 
@@ -207,6 +208,11 @@ class Table extends React.Component {
         />
       );
     }
+
+    if (data.length === 0) {
+      tableProps= _.omit(tableProps, 'expandedRowRender');
+    }
+
     return (
       <div className={styles.container} >
         {conditionSearchComponent}
