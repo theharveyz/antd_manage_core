@@ -18,9 +18,9 @@ export default class MarkdownEditor extends React.Component {
 
   state = { value: '', preview: '', showPreview: false, loading: false };
 
-  componentWillMount() {
-    if ('value' in this.props) {
-      const { value } = this.props;
+  componentWillReceiveProps(nextProps) {
+    if ('value' in nextProps) {
+      const { value } = nextProps;
       this.setState({ value });
     }
   }
