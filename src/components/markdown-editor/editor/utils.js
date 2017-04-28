@@ -1,6 +1,7 @@
 export const generateNewValue = (editorTemp, value, inject) => {
+  const v = value || '';
   const position = editorTemp.selectionStart || 0;
-  const newValue = `${value.substring(0, position)}${inject}${value.substring(position)}`;
+  const newValue = `${v.substring(0, position)}${inject}${v.substring(position)}`;
   const newPosition = position + inject.length;
   return { newValue, newPosition };
 };
