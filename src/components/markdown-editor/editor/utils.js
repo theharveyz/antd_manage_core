@@ -10,8 +10,7 @@ export const generateLink = () => ('[链接文字](http://)');
 
 export const generateImg = (bucketUrl, file, newline = true) => {
   const imageUrl = `${bucketUrl}/${file.response.key}`;
-  const imageName = file.name || '';
-  const imgLink = `![${imageName}](${imageUrl})`;
+  const imgLink = `![](${imageUrl})`;
   if (newline) return `\r\n${imgLink}\r\n`;
   return imgLink;
 };
@@ -19,8 +18,8 @@ export const generateImg = (bucketUrl, file, newline = true) => {
 export const setFocus = (ref, position) => {
   if (ref) {
     const r = ref;
-    r.focus();
     r.selectionStart = position;
     r.selectionEnd = position;
+    r.focus();
   }
 };
