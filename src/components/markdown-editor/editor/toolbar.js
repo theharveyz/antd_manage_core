@@ -25,7 +25,7 @@ export default class ToolBar extends React.Component {
     const { bucketUrl } = qiniuToken;
     const file = _.last(info.fileList.slice(-2));
     if (file && file.status === 'done') {
-      injectTrigger(generateImg(bucketUrl, file));
+      injectTrigger(generateImg(bucketUrl, file, false));
     }
     if (file && file.status === 'error') {
       message.error(`上传失败 请刷新页面后重试 ${file.error}`);
