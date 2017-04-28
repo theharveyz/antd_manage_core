@@ -1,0 +1,111 @@
+.editor {
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  background-color: #FFF;
+
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    -webkit-box-shadow: none;
+    background-color: none
+  }
+
+  ::-webkit-scrollbar-thumb {
+    -webkit-box-shadow: none;
+    border-radius: 5px;
+    background-color: #bfc1c3
+  }
+}
+
+.editor:hover {
+  border-color: #49a9ee;
+}
+
+.toolbar {
+  height: 38px;
+  border-bottom: 1px solid #d9d9d9;
+  .tool {
+    margin-left: 10px;
+    a {
+      display: inline-block;
+      color: #ddd;
+      position: relative;
+    }
+    :global(.anticon) {
+      line-height: 38px;
+      font-size: 20px;
+    }
+  }
+  :global(.anticon-eye) {
+    color: #666;
+  }
+}
+
+.toolbar:hover {
+  .tool a {
+    color: #999;
+  }
+  .tool:hover {
+    a:after {
+      content: ' ';
+      height: 27px;
+      width: 27px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      position: absolute;
+      left: -4px;
+      top: 5px;
+    }
+  }
+}
+
+.main {
+  width: 100%;
+  padding: 10px;
+  line-height: 10px;
+}
+
+.textArea {
+  width: 100%;
+  border: none;
+  resize: none;
+  outline: none;
+  font-size: 14px;
+  line-height: 20px;
+  min-height: 200px;
+  min-width: 200px;
+}
+
+.preview {
+  width: 100%;
+  min-height: 200px;
+  min-width: 200px;
+  img {
+    max-width: 90%;
+    display: block;
+    margin: 5px auto;
+  }
+}
+
+.statusbar {
+  text-align: right;
+  color: #959694;
+  span {
+    margin: 0 5px;
+  }
+}
+
+:global(textarea::-moz-placeholder) {
+  color: #ccc;
+  opacity: 1
+}
+
+:global(textarea:-ms-input-placeholder) {
+  color: #ccc
+}
+
+:global(textarea::-webkit-input-placeholder) {
+  color: #ccc
+}
