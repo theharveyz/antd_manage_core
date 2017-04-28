@@ -36,4 +36,12 @@
 
 ### v1.1.14
 * 表格组件支持传入 `expandedRowRender`, 修复两个表格嵌套时，父表格数据没有加载成功时，代码崩溃的错误
+
+### v1.1.15
+* 添加 MarkdownEditor 组件
+    * 属性
+    * placeholder string
+    * disabledTools array 禁用的工具
+    * qiniuToken object { token bucketUrl } 七牛上传token和bucketUrl
+
  
