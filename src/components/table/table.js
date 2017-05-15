@@ -63,7 +63,6 @@ class Table extends React.Component {
   onSearch(e) {
     const { query } = this.state;
     query.offset = 0;
-
     const conditionQuery = this.generateConditionQueryString(e.value.conditionQuery, e.value.conditionResult);
     const userConditionQuery = this.generateConditionQueryString(
       e.value.userConditionQuery,
@@ -103,13 +102,16 @@ class Table extends React.Component {
     if (!queryKey) {
       key = 'conditions';
     }
+    if (!query) {
+      return '';
+    }
     const { qsFormatSearchQuery, formatConditionQuery } = this.props;
     let conditionQuery = query;
     if (formatConditionQuery && qsFormatSearchQuery) {
       conditionQuery = formatConditionQuery(result, key);
-      conditionQuery = `${conditionQuery}&${this.qsFormatSearchQuery(result)}`;
+      conditionQuery = `${conditionQuery}&${this.qsFormatSearchQuery(result, key)}`;
     } else if (qsFormatSearchQuery) {
-      conditionQuery = this.qsFormatSearchQuery(result);
+      conditionQuery = this.qsFormatSearchQuery(result, key);
     } else if (formatConditionQuery) {
       conditionQuery = formatConditionQuery(result, key);
     }
@@ -161,8 +163,8 @@ class Table extends React.Component {
     });
   }
 
-  qsFormatSearchQuery (queryObj) {
-    return `conditions=${encodeURIComponent(qs.stringify({ conditions: queryObj }))}`;
+  qsFormatSearchQuery (queryObj, queryKey) {
+    return `${queryKey}=${encodeURIComponent(qs.stringify({ conditions: queryObj }))}`;
   }
 
   render() {

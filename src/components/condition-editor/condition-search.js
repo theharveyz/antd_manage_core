@@ -222,7 +222,7 @@ class ConditionSearch extends React.Component {
       conditions = parseInputConditions(inputConditions);
       checkInputConditions(conditions, this);
     } catch (e) {
-      console.log('parseInputConditions error: ', e);
+      console.warn('parseInputConditions error: ', e);
       conditions = [];
     }
     return conditions;
@@ -246,50 +246,66 @@ class ConditionSearch extends React.Component {
     return conditions;
   }
 
+  getConditionsComponents = (userConditions) => (
+    _.map(
+      _.take(userConditions, userConditions.length - 1),
+      (condition) => (
+        <div key={`${condition.value}_${condition.uuid}`} >
+          <Col
+            xs={24}
+            sm={12}
+            md={12}
+            lg={12}
+            className={styles.item}
+          >
+            {injectItemComponent(condition).component}
+          </Col>
+        </div>
+      )
+    )
+  )
+
   render() {
     const { conditions, visible, advancedConditions, userConditions } = this.state;
     const { fieldConfigs, shortcutConfigs, actionConfigs, name, realTime, advanced } = this.props;
     const conditionEditorWidth = '80%';
-    let components, userConditionsComponents;
+    let components, userConditionsComponents, searchInputCoponent;
     if (advancedConditions.length) {
       const parsedAdvancedConditions = arrayToStateConditions(
         advancedConditions, this
       );
-      components = (<ConditionPreview conditions={parsedAdvancedConditions} />);
+      searchInputCoponent = (<ConditionPreview conditions={parsedAdvancedConditions} />);
     } else {
-      components = _.map(
-        _.take(conditions, conditions.length - 1),
-        (condition) => (
-          <div key={`${condition.value}_${condition.uuid}`} >
-            <Col
-              xs={24}
-              sm={12}
-              md={12}
-              lg={12}
-              className={styles.item}
-            >
-              {injectItemComponent(condition).component}
-            </Col>
+      components = this.getConditionsComponents(conditions);
+      userConditionsComponents = this.getConditionsComponents(userConditions);
+      if (conditions.length > 0 && userConditions.length > 0) {
+        searchInputCoponent = (
+          <div>
+            <section className={styles.userSearch}>
+              <div className={styles.userSearchTitle}>
+                基础维度
+              </div>
+              <Row className={styles.forms} gutter={16} >
+                  {components}
+              </Row>
+            </section>
+            <section className={styles.userSearch}>
+              <div className={styles.userSearchTitle}>
+                用户维度
+              </div>
+              <Row className={styles.forms} gutter={16} >
+                  {userConditionsComponents}
+              </Row>
+            </section>
           </div>
-        )
-      );
-
-      userConditionsComponents = _.map(
-        _.take(userConditions, userConditions.length - 1),
-        (condition) => (
-          <div key={`${condition.value}_${condition.uuid}`} >
-            <Col
-                xs={24}
-                sm={12}
-                md={12}
-                lg={12}
-                className={styles.item}
-            >
-                {injectItemComponent(condition).component}
-            </Col>
-          </div>
-        )
-      );
+        );
+      } else if (conditions.length > 0) {
+        searchInputCoponent = (
+          <Row className={styles.forms} gutter={16} >
+            {components}
+          </Row>
+        );
+      }
     }
 
     let extra = [];
@@ -336,16 +352,7 @@ class ConditionSearch extends React.Component {
     return (
       <div className={styles.container} >
         <Card title="搜索" extra={extra} >
-          <Card title="基础维度">
-            <Row className={styles.forms} gutter={16} >
-              {components}
-            </Row>
-          </Card>
-          <Card title="用户维度">
-            <Row className={styles.forms} gutter={16} >
-                {userConditionsComponents}
-            </Row>
-          </Card>
+          {searchInputCoponent}
           <Row>
             <div className={styles.action} >
               {editButton}
