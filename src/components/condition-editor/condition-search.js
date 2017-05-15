@@ -125,8 +125,8 @@ class ConditionSearch extends React.Component {
 
     // stateConditions只会有一层
     if (type === 'ConditionSearch') {
-      const stateConditions = this.injectHistoryConditions(this.state.conditions);
-      const stateUserConditions = this.injectHistoryConditions(this.state.userConditions);
+      const stateConditions = this.injectHistoryConditions(conditions, this.state.conditions);
+      const stateUserConditions = this.injectHistoryConditions(userConditions, this.state.userConditions);
       this.setConditions(stateConditions, stateUserConditions);
     } else {
       if (this.refs.conditionEditor) {
@@ -222,24 +222,24 @@ class ConditionSearch extends React.Component {
       conditions = parseInputConditions(inputConditions);
       checkInputConditions(conditions, this);
     } catch (e) {
-      console.warn('parseInputConditions error: ', e);
+      // console.warn('parseInputConditions error: ', e);
       conditions = [];
     }
     return conditions;
   }
 
-  injectHistoryConditions(conditions) {
-    _.each(conditions, (condition) => {
+  injectHistoryConditions(conditionHistroy, conditions) {
+    _.each(conditionHistroy, (condition) => {
       if (valueNotNull(condition)) {
         const cloneCondition = _.clone(condition);
         const value = cloneCondition.value;
         const predicate = cloneCondition.predicate;
         delete cloneCondition.value;
         delete cloneCondition.predicate;
-        const stateCondition = _.find(stateConditions, cloneCondition);
+        const stateCondition = _.find(conditions, cloneCondition);
         if (stateCondition) {
-            stateCondition.value = value;
-            stateCondition.predicate = predicate;
+          stateCondition.value = value;
+          stateCondition.predicate = predicate;
         }
       }
     });
