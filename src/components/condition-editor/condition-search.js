@@ -26,16 +26,20 @@ class ConditionSearch extends React.Component {
     shortcutConfigs: {},
     onSearch: _.noop,
     conditions: [],
+    userConditions: [],
+    userFieldConfigs: {},
     realTime: true,
     advanced: false
   };
 
   static propTypes = {
     fieldConfigs: React.PropTypes.object,
+    userFieldConfigs: React.PropTypes.object,
     actionConfigs: React.PropTypes.object,
     shortcutConfigs: React.PropTypes.any,
     onSearch: React.PropTypes.func,
     conditions: React.PropTypes.any,
+    userConditions: React.PropTypes.any,
     name: React.PropTypes.string,
     realTime: React.PropTypes.bool,
     advanced: React.PropTypes.bool
@@ -43,13 +47,15 @@ class ConditionSearch extends React.Component {
 
   state = {
     conditions: [],
+    userConditions: [],
     advancedConditions: [],
     visible: false
   };
 
   componentWillMount() {
     this.prevConditionsString = '';
-    this.setInputConditions(this.props.conditions);
+    this.prevUserConditionsString = '';
+    this.setInputConditions(this.props.conditions, this.props.userConditions);
   }
 
   componentDidMount() {
@@ -64,7 +70,7 @@ class ConditionSearch extends React.Component {
 
   onCancel() {
     const { advancedConditions } = this.state;
-    this.refs.conditionEditor.setInputConditions(_.cloneDeep(advancedConditions));
+    this.refs.conditionEditor.setInputConditions(_.cloneDeep(advancedConditions), []);
     this.setState({
       visible: false
     });
@@ -87,50 +93,44 @@ class ConditionSearch extends React.Component {
 
   onSearchProxy() {
     const { onSearch } = this.props;
-    const { conditions, advancedConditions } = this.state;
+    const { conditions, advancedConditions, userConditions } = this.state;
 
     const emitConditions = advancedConditions.length
       ? advancedConditions : conditionsToResult(conditions);
+
+    let userConditionsStr = '';
+    if (userConditions.length > 1) {
+        userConditionsStr = conditionsToResult(userConditions);
+    }
     const type = advancedConditions.length ? 'ConditionEditor' : 'ConditionSearch';
 
     if (emitConditions.length) {
-      this.refs.conditionHistory.addConditions(emitConditions, type);
+      this.refs.conditionHistory.addConditions(emitConditions, type, userConditionsStr);
     }
-
     if (_.isFunction(onSearch)) {
       onSearch({
         value: {
           conditionResult: emitConditions,
-          conditionQuery: conditionsToQueryString(emitConditions)
+          userConditionResult:  userConditionsStr,
+          conditionQuery: conditionsToQueryString(emitConditions),
+          userConditionQuery: conditionsToQueryString(userConditionsStr, true)
         }
       });
     }
   }
 
   onUse(e) {
-    const { conditions, type } = e.value;
+    const { conditions, type, userConditions} = e.value;
     const { realTime } = this.props;
-    const stateConditions = this.state.conditions;
+
     // stateConditions只会有一层
     if (type === 'ConditionSearch') {
-      _.each(conditions, (condition) => {
-        if (valueNotNull(condition)) {
-          const cloneCondition = _.clone(condition);
-          const value = cloneCondition.value;
-          const predicate = cloneCondition.predicate;
-          delete cloneCondition.value;
-          delete cloneCondition.predicate;
-          const stateCondition = _.find(stateConditions, cloneCondition);
-          if (stateCondition) {
-            stateCondition.value = value;
-            stateCondition.predicate = predicate;
-          }
-        }
-      });
-      this.setConditions(stateConditions);
+      const stateConditions = this.injectHistoryConditions(this.state.conditions);
+      const stateUserConditions = this.injectHistoryConditions(this.state.userConditions);
+      this.setConditions(stateConditions, stateUserConditions);
     } else {
       if (this.refs.conditionEditor) {
-        this.refs.conditionEditor.setInputConditions(conditions);
+        this.refs.conditionEditor.setInputConditions(conditions, userConditions);
       }
       this.setState({
         advancedConditions: conditions
@@ -143,33 +143,44 @@ class ConditionSearch extends React.Component {
   }
 
   onClear() {
-    const { conditions } = this.state;
+    const { conditions, userConditions } = this.state;
     conditionsValueToNull(conditions);
+    conditionsValueToNull(userConditions);
     if (this.refs.conditionEditor) {
-      this.refs.conditionEditor.setConditions([]);
+      this.refs.conditionEditor.setConditions([], []);
     }
     this.prevConditionsString = '';
+    this.prevUserConditionsString = '';
     this.setState({
       conditions,
+      userConditions,
       advancedConditions: []
     }, () => {
       this.onSearchProxy();
     });
   }
 
-  setConditions(conditions) {
+  setConditions(conditions, userConditions) {
     const { realTime } = this.props;
     let emitCondition = true;
 
     const conditionsString = this.transformPredicateAndValueString(conditions);
-    if (conditions.length === 1 || this.prevConditionsString === conditionsString) {
+    const userConditionsString = this.transformPredicateAndValueString(userConditions);
+
+    if (
+        (conditions.length === 1 || this.prevConditionsString === conditionsString) &&
+        (userConditions.length === 1 || this.userConditionsString === userConditionsString)
+    )
+    {
       emitCondition = false;
     }
 
     this.prevConditionsString = conditionsString;
+    this.prevUeseConditionsString = userConditionsString;
 
     this.setState({
       conditions,
+      userConditions,
       advancedConditions: []
     }, () => {
       if (realTime && emitCondition) {
@@ -178,10 +189,17 @@ class ConditionSearch extends React.Component {
     });
   }
 
-  setInputConditions(inputConditions) {
-    if (inputConditions) {
+  setInputConditions(inputConditions, inputUserConditions) {
+    if (inputConditions && inputUserConditions) {
+      const conditions = arrayToStateConditions(this.parseInputConditions(inputConditions), this, false);
+      const userConditions = arrayToStateConditions(this.parseInputConditions(inputUserConditions), this, true);
       this.setState({
-        conditions: arrayToStateConditions(this.parseInputConditions(inputConditions), this)
+        conditions,
+        userConditions
+      });
+    } else if (inputConditions) {
+      this.setState({
+        conditions: arrayToStateConditions(this.parseInputConditions(inputConditions), this, false)
       });
     }
   }
@@ -204,16 +222,35 @@ class ConditionSearch extends React.Component {
       conditions = parseInputConditions(inputConditions);
       checkInputConditions(conditions, this);
     } catch (e) {
+      console.log('parseInputConditions error: ', e);
       conditions = [];
     }
     return conditions;
   }
 
+  injectHistoryConditions(conditions) {
+    _.each(conditions, (condition) => {
+      if (valueNotNull(condition)) {
+        const cloneCondition = _.clone(condition);
+        const value = cloneCondition.value;
+        const predicate = cloneCondition.predicate;
+        delete cloneCondition.value;
+        delete cloneCondition.predicate;
+        const stateCondition = _.find(stateConditions, cloneCondition);
+        if (stateCondition) {
+            stateCondition.value = value;
+            stateCondition.predicate = predicate;
+        }
+      }
+    });
+    return conditions;
+  }
+
   render() {
-    const { conditions, visible, advancedConditions } = this.state;
+    const { conditions, visible, advancedConditions, userConditions } = this.state;
     const { fieldConfigs, shortcutConfigs, actionConfigs, name, realTime, advanced } = this.props;
     const conditionEditorWidth = '80%';
-    let components;
+    let components, userConditionsComponents;
     if (advancedConditions.length) {
       const parsedAdvancedConditions = arrayToStateConditions(
         advancedConditions, this
@@ -232,6 +269,23 @@ class ConditionSearch extends React.Component {
               className={styles.item}
             >
               {injectItemComponent(condition).component}
+            </Col>
+          </div>
+        )
+      );
+
+      userConditionsComponents = _.map(
+        _.take(userConditions, userConditions.length - 1),
+        (condition) => (
+          <div key={`${condition.value}_${condition.uuid}`} >
+            <Col
+                xs={24}
+                sm={12}
+                md={12}
+                lg={12}
+                className={styles.item}
+            >
+                {injectItemComponent(condition).component}
             </Col>
           </div>
         )
@@ -282,9 +336,16 @@ class ConditionSearch extends React.Component {
     return (
       <div className={styles.container} >
         <Card title="搜索" extra={extra} >
-          <Row className={styles.forms} gutter={16} >
-            {components}
-          </Row>
+          <Card title="基础维度">
+            <Row className={styles.forms} gutter={16} >
+              {components}
+            </Row>
+          </Card>
+          <Card title="用户维度">
+            <Row className={styles.forms} gutter={16} >
+                {userConditionsComponents}
+            </Row>
+          </Card>
           <Row>
             <div className={styles.action} >
               {editButton}
