@@ -38,7 +38,6 @@ export const isBooleanTrue = (value) => (
   typeof(value) === 'boolean' && value === true
 );
 
-
 export const unixToMoment = (timestamp) => (
   moment.unix(timestamp)
 );

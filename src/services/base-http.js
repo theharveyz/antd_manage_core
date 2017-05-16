@@ -2,6 +2,7 @@ import urijs from 'urijs';
 import DI from '../di';
 import { HTTP_GET, HTTP_POST, HTTP_PUT, HTTP_PATCH } from '../constants/http';
 import 'whatwg-fetch';
+import Raven from 'raven-js';
 import {
   httpGet,
   httpPost,
@@ -79,6 +80,7 @@ export default class BaseHttp {
         const err = new Error(error.message);
         err.response = response;
         err.code = error.code;
+        Raven.captureException(err);
         throw err;
       });
     }
