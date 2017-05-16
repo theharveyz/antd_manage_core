@@ -188,7 +188,7 @@ export const getCondition = (uuid, conditions) => {
 };
 
 export const capitalizeFirstLetter = (string)  => {
-    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 };
 
 export const generateConditionByKey = (key, editor, type, isUserCondition) => {

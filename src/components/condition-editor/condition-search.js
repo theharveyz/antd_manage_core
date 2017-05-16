@@ -104,7 +104,7 @@ class ConditionSearch extends React.Component {
     }
     const type = advancedConditions.length ? 'ConditionEditor' : 'ConditionSearch';
 
-    if (emitConditions.length) {
+    if (emitConditions.length || userConditionsStr.length) {
       this.refs.conditionHistory.addConditions(emitConditions, type, userConditionsStr);
     }
     if (_.isFunction(onSearch)) {
@@ -267,7 +267,7 @@ class ConditionSearch extends React.Component {
 
   render() {
     const { conditions, visible, advancedConditions, userConditions } = this.state;
-    const { fieldConfigs, shortcutConfigs, actionConfigs, name, realTime, advanced } = this.props;
+    const { fieldConfigs, userFieldConfigs, shortcutConfigs, actionConfigs, name, realTime, advanced } = this.props;
     const conditionEditorWidth = '80%';
     let components, userConditionsComponents, searchInputCoponent;
     if (advancedConditions.length) {
@@ -313,6 +313,7 @@ class ConditionSearch extends React.Component {
       <ConditionHistory
         onUse={::this.onUse}
         fieldConfigs={fieldConfigs}
+        userFieldConfigs={userFieldConfigs}
         shortcutConfigs={shortcutConfigs}
         actionConfigs={actionConfigs}
         name={name}
@@ -346,7 +347,9 @@ class ConditionSearch extends React.Component {
     }
 
     let clearButton;
-    if (checkConditionsHasValue(conditions) || advancedConditions.length) {
+    if (checkConditionsHasValue(conditions) ||
+        checkConditionsHasValue(userConditions) ||
+        advancedConditions.length) {
       clearButton = (<Button onClick={::this.onClear} >清空条件</Button>);
     }
     return (

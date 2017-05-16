@@ -13,6 +13,7 @@ class ConditionPreview extends React.Component {
 
   static propTypes = {
     conditions: React.PropTypes.array,
+    userConditions: React.PropTypes.array,
     format: React.PropTypes.bool
   };
 
@@ -112,24 +113,40 @@ class ConditionPreview extends React.Component {
         }
       });
     }
-
     return items;
   }
 
-  render() {
-    const { conditions, format } = this.props;
-
+  showConditionsBlock(conditions, type) {
+    const { format } = this.props;
     let formatClassName;
-
     if (format) {
-      formatClassName = styles.format;
+        formatClassName = styles.format;
     }
-
+    let items = this.parseConditions(conditions);
+    const len = items.length;
+    let title = '基础维度';
+    if (len === 0) {
+      items = <div>无</div>;
+    }
+    if (type === 'user'){
+      title = '用户维度';
+    }
     return (
       <div className={styles.container} >
+        <h4>{title}</h4>
         <div className={formatClassName} >
-          {this.parseConditions(conditions)}
+          {items}
         </div>
+      </div>
+    );
+  }
+
+  render() {
+    const { conditions, userConditions } = this.props;
+    return (
+      <div>
+        {this.showConditionsBlock(conditions, 'basic')}
+        {this.showConditionsBlock(userConditions, 'user')}
       </div>
     );
   }
