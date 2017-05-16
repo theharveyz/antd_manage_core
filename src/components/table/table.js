@@ -102,11 +102,9 @@ class Table extends React.Component {
     if (!queryKey) {
       key = 'conditions';
     }
-    if (!query) {
-      return '';
-    }
+
     const { qsFormatSearchQuery, formatConditionQuery } = this.props;
-    let conditionQuery = query;
+    let conditionQuery = query || '';
     if (formatConditionQuery && qsFormatSearchQuery) {
       conditionQuery = formatConditionQuery(result, key);
       conditionQuery = `${conditionQuery}&${this.qsFormatSearchQuery(result, key)}`;

@@ -48,3 +48,8 @@
 * table 组件更新， 支持用户维度搜索
     * userFieldConfigs, object
     * userConditions, array
+* 支持 sentry    
+    
+### v1.1.18
+* sentry 只在生产环境初始化
+* 修复 condition query 的 bug
