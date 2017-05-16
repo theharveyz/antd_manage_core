@@ -44,4 +44,7 @@
     * disabledTools array 禁用的工具
     * qiniuToken object { token bucketUrl } 七牛上传token和bucketUrl
 
- 
+### v1.1.17
+* table 组件更新， 支持用户维度搜索
+    * userFieldConfigs, object
+    * userConditions, array
