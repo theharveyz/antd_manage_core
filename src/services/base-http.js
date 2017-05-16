@@ -1,5 +1,6 @@
 import urijs from 'urijs';
 import DI from '../di';
+import _ from 'lodash';
 import { HTTP_GET, HTTP_POST, HTTP_PUT, HTTP_PATCH } from '../constants/http';
 import 'whatwg-fetch';
 import Raven from 'raven-js';
@@ -80,7 +81,11 @@ export default class BaseHttp {
         const err = new Error(error.message);
         err.response = response;
         err.code = error.code;
-        Raven.captureException(err);
+        const sentryUrl = _.get(DI.get('config'), 'configs.sentry.url');
+        if (process.env.NODE_ENV === 'production' && sentryUrl) {
+          Raven.captureException(err);
+        }
+
         throw err;
       });
     }

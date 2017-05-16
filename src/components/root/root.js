@@ -53,7 +53,9 @@ class Root extends React.Component {
   init() {
     moment.locale('zh-CN');
     const sentryUrl = _.get(DI.get('config'), 'configs.sentry.url');
-    Raven.config(sentryUrl).install();
+    if (process.env.NODE_ENV === 'production' && sentryUrl) {
+      Raven.config(sentryUrl).install();
+    }
     const { configs, navigationConfig } = this.props;
     DI.get('config').setConfigs(configs);
     DI.get('navigation')
