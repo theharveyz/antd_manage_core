@@ -11,6 +11,7 @@ export default class ConditionHistory extends React.Component {
 
   static defaultProps = {
     fieldConfigs: {},
+    userFieldConfigs: {},
     actionConfigs: {},
     shortcutConfigs: {},
     onUse: _.noop,
@@ -23,6 +24,7 @@ export default class ConditionHistory extends React.Component {
   static propTypes = {
     name: React.PropTypes.string,
     fieldConfigs: React.PropTypes.object,
+    userFieldConfigs: React.PropTypes.object,
     actionConfigs: React.PropTypes.object,
     shortcutConfigs: React.PropTypes.any,
     onUse: React.PropTypes.func,
@@ -51,10 +53,15 @@ export default class ConditionHistory extends React.Component {
         historyConditions.map((h) => {
           const c = h;
           const conditions = arrayToStateConditions(c.conditions, this);
-          if (conditions.length === 0) {
+          let userConditions = '';
+          if (c.userConditions) {
+            userConditions = arrayToStateConditions(c.userConditions, this, true);
+          }
+          if (conditions.length === 0 && userConditions.length === 0) {
             dataKeyChanged = true;
           } else {
             c.preview = conditions;
+            c.userPreview = userConditions;
           }
           return conditions;
         });
@@ -101,7 +108,7 @@ export default class ConditionHistory extends React.Component {
     });
   }
 
-  addConditions(conditions, type) {
+  addConditions(conditions, type, userConditions) {
     const { name, historyOfflineMaxSize } = this.props;
 
     this.store.get(name).then((offlineConditions) => {
@@ -118,7 +125,8 @@ export default class ConditionHistory extends React.Component {
       historyConditions.unshift({
         date: new Date,
         type,
-        conditions
+        conditions,
+        userConditions
       });
 
       this.store.add(name, historyConditions).then(() => {
@@ -168,11 +176,15 @@ export default class ConditionHistory extends React.Component {
         key: 'preview',
         render: (text, record) => {
           let conditions = record.preview;
+          let userConditions = record.userPreview;
           if (!conditions) {
             conditions = arrayToStateConditions(record.conditions, this);
           }
+          if (!userConditions) {
+            userConditions = arrayToStateConditions(record.userConditions, this, true);
+          }
           const content = (
-            <ConditionPreview conditions={conditions} />
+            <ConditionPreview conditions={conditions} userConditions={userConditions} />
           );
           return (
             <Popover placement="bottom" content={content}>

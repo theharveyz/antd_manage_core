@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/bmqb/antd_manage_core/issues"
   },
-  "homepage": "https://github.com/bmqb/antd_manage_core#readme"
+  "homepage": "https://github.com/bmqb/antd_manage_core#readme",
+  "dependencies": {
+    "raven-js": "^3.15.0"
+  }
 }

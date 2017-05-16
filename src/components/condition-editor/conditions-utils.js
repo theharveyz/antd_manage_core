@@ -136,14 +136,15 @@ export const optimizeConditions = (conditions) => {
 };
 
 
-export const generateConditionSelect = (editor) => (
+
+export const generateConditionSelect = (editor, type) => (
   ({
     uuid: generateUUID(),
     value: $AND,
     onChange: (event) => {
-      const conditions = editor.state.conditions;
+      const { conditions, userConditions } = editor.state;
       const { uuid, value } = event;
-      const conditionSelect = getConditionSelect(uuid, conditions);
+      const conditionSelect = getConditionSelect(uuid, conditions) || getConditionSelect(uuid, userConditions);
       conditionSelect.value = value;
       editor.setConditions(conditions);
     }
@@ -186,54 +187,75 @@ export const getCondition = (uuid, conditions) => {
   return null;
 };
 
-export const generateConditionByKey = (key, editor, type) => {
-  const configs = editor.props[`${type}Configs`];
+export const capitalizeFirstLetter = (string)  => {
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+};
+
+export const generateConditionByKey = (key, editor, type, isUserCondition) => {
+  let configs = editor.props[`${type}Configs`];
+  if (isUserCondition) {
+    configs = editor.props[`user${capitalizeFirstLetter(type)}Configs`];
+  }
   const condition = _.cloneDeep(configs[key]);
+
   if (condition) {
     condition.operation = type;
     condition.operationValue = key;
     condition.predicate = DEFAULT_PREDICATE;
     condition.uuid = generateUUID();
     condition.onChange = (event) => {
-      const uuid = event.uuid;
       const conditions = editor.state.conditions;
-      const targetCondition = getCondition(uuid, conditions).condition;
+      const userConditions = editor.state.userConditions;
+      const uuid = event.uuid;
+      let targetCondition = '';
+      if (isUserCondition) {
+        targetCondition = getCondition(uuid, userConditions).condition;
+      } else {
+        targetCondition = getCondition(uuid, conditions).condition;
+      }
       if (targetCondition.value !== event.value) {
         targetCondition.value = event.value;
-        editor.setConditions(conditions);
       }
+      editor.setConditions(conditions, userConditions);
     };
     condition.predicateOnChange = (event) => {
-      const { predicate, uuid } = event;
       const conditions = editor.state.conditions;
-      const targetCondition = getCondition(uuid, conditions).condition;
-
+      const userConditions = editor.state.userConditions;
+      const { predicate, uuid } = event;
+      let targetCondition = '';
+      if (isUserCondition) {
+        targetCondition = getCondition(uuid, userConditions).condition;
+      } else {
+        targetCondition = getCondition(uuid, conditions).condition;
+      }
       if (predicate === $IS_NOT_NULL || predicate === $IS_NULL) {
         targetCondition.value = undefined;
       }
-
       if (predicate === $IN || predicate === $NOT_IN) {
         if (!_.isArray(targetCondition.value)) {
           targetCondition.value = undefined;
         }
       }
-
       targetCondition.predicate = predicate;
-      editor.setConditions(conditions);
+      editor.setConditions(conditions, userConditions);
     };
     condition.onDelete = (event) => {
-      const uuid = event.uuid;
       const conditions = editor.state.conditions;
-      const targetCondition = getCondition(uuid, conditions);
+      const userConditions = editor.state.userConditions;
+      const uuid = event.uuid;
+      let targetCondition = getCondition(uuid, conditions);
+      if (isUserCondition) {
+        targetCondition = getCondition(uuid, userConditions);
+      }
       targetCondition.parentCondition.splice(targetCondition.index, 1);
-      editor.setConditions(conditions);
+      editor.setConditions(conditions, userConditions);
     };
   }
   return condition;
 };
 
-export const objectToCondition = (object, editor) => {
-  const condition = generateConditionByKey(object.operationValue, editor, object.operation);
+export const objectToCondition = (object, editor, isUserCondition) => {
+  const condition = generateConditionByKey(object.operationValue, editor, object.operation, isUserCondition);
   if (condition) {
     condition.value = object.value;
     condition.predicate = object.predicate;
@@ -241,7 +263,7 @@ export const objectToCondition = (object, editor) => {
   return condition;
 };
 
-export const arrayToStateConditions = (items, editor) => {
+export const arrayToStateConditions = (items, editor, isUserCondition) => {
   let i = 0;
   const l = items.length - 1;
   const conditions = [];
@@ -249,19 +271,21 @@ export const arrayToStateConditions = (items, editor) => {
   for (; i < l; i++) {
     const item = items[i];
     if (_.isArray(item)) {
-      conditions.push(arrayToStateConditions(item, editor));
+      conditions.push(arrayToStateConditions(item, editor, isUserCondition));
     } else {
-      const condition = objectToCondition(item, editor);
+      const condition = objectToCondition(item, editor, isUserCondition);
       if (condition) {
         conditions.push(condition);
       }
     }
   }
+
   if (conditions.length) {
     const conditionSelect = generateConditionSelect(editor);
     conditionSelect.value = items[l];
     conditions.push(conditionSelect);
   }
+
   return conditions;
 };
 
@@ -350,9 +374,13 @@ export const conditionsToResult = (conditions) => {
   return results;
 };
 
-export const conditionsToQueryString = (conditions) => (
-  qs.stringify({ conditions: conditionsToResult(conditions) })
-);
+export const conditionsToQueryString = (conditions, userConditions) => {
+  let keyName = 'conditions';
+  if (userConditions) {
+    keyName = 'userConditions';
+  }
+  return qs.stringify({ [keyName]: conditionsToResult(conditions) });
+};
 
 export const checkItem = (item, editor) => {
   if (!_.isPlainObject(item)) {
@@ -379,14 +407,18 @@ export const checkItem = (item, editor) => {
     throw new Error('item 必须设置operationValue');
   }
 
-  const { fieldConfigs, actionConfigs } = editor.props;
+  const { fieldConfigs, actionConfigs, userFieldConfigs } = editor.props;
 
   if (item.operation === OPERATION_ACTION && !actionConfigs[item.operationValue]) {
     throw new Error(`operationValue的值${item.operationValue}在actionConfigs里不存在!`);
   }
 
-  if (item.operation === OPERATION_FIELD && !fieldConfigs[item.operationValue]) {
-    throw new Error(`operationValue的值${item.operationValue}在fieldConfigs里不存在!`);
+  if (
+    item.operation === OPERATION_FIELD
+    && !fieldConfigs[item.operationValue]
+    && !userFieldConfigs[item.operationValue]
+  ) {
+    throw new Error(`operationValue的值${item.operationValue}在fieldConfigs 和 userFieldConfigs 里不存在!`);
   }
 };
 

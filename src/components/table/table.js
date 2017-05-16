@@ -62,21 +62,16 @@ class Table extends React.Component {
 
   onSearch(e) {
     const { query } = this.state;
-    const { qsFormatSearchQuery, formatConditionQuery } = this.props;
     query.offset = 0;
-    let conditionQuery = e.value.conditionQuery;
-
-    if (formatConditionQuery && qsFormatSearchQuery) {
-      conditionQuery = formatConditionQuery(e.value.conditionResult);
-      conditionQuery = `${conditionQuery}&${this.qsFormatSearchQuery(e.value.conditionResult)}`;
-    } else if (qsFormatSearchQuery) {
-      conditionQuery = this.qsFormatSearchQuery(e.value.conditionResult);
-    } else if (formatConditionQuery) {
-      conditionQuery = formatConditionQuery(e.value.conditionResult);
-    }
-
+    const conditionQuery = this.generateConditionQueryString(e.value.conditionQuery, e.value.conditionResult);
+    const userConditionQuery = this.generateConditionQueryString(
+      e.value.userConditionQuery,
+      e.value.userConditionResult,
+      'userConditions'
+    );
+    const queryString = this.generateQueryString(conditionQuery, userConditionQuery);
     this.setState({
-      queryString: conditionQuery,
+      queryString,
       query
     }, () => {
       this.fetchData();
@@ -91,6 +86,36 @@ class Table extends React.Component {
         this.fetchData();
       })
       .catch(() => message.success('删除失败'));
+  }
+
+  generateQueryString(conditionQuery, userConditionQuery) {
+    if (userConditionQuery && conditionQuery) {
+      return `${conditionQuery}&${userConditionQuery}`;
+    } else if (conditionQuery) {
+      return conditionQuery;
+    }
+    return userConditionQuery;
+  }
+
+  generateConditionQueryString(query, result, queryKey) {
+    let key = queryKey;
+    if (!queryKey) {
+      key = 'conditions';
+    }
+    if (!query) {
+      return '';
+    }
+    const { qsFormatSearchQuery, formatConditionQuery } = this.props;
+    let conditionQuery = query;
+    if (formatConditionQuery && qsFormatSearchQuery) {
+      conditionQuery = formatConditionQuery(result, key);
+      conditionQuery = `${conditionQuery}&${this.qsFormatSearchQuery(result, key)}`;
+    } else if (qsFormatSearchQuery) {
+      conditionQuery = this.qsFormatSearchQuery(result, key);
+    } else if (formatConditionQuery) {
+      conditionQuery = formatConditionQuery(result, key);
+    }
+    return conditionQuery;
   }
 
   fetchData(showDataLoading) {
@@ -138,8 +163,8 @@ class Table extends React.Component {
     });
   }
 
-  qsFormatSearchQuery (queryObj) {
-    return `conditions=${encodeURIComponent(qs.stringify({ conditions: queryObj }))}`;
+  qsFormatSearchQuery (queryObj, queryKey) {
+    return `${queryKey}=${encodeURIComponent(qs.stringify({ conditions: queryObj }))}`;
   }
 
   render() {

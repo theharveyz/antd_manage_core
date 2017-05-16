@@ -6,6 +6,9 @@ import Layout from '../layout/layout';
 import Login from '../login/login';
 import NotFound from '../not-found/not-found';
 import moment from 'moment';
+import Raven from 'raven-js';
+
+
 import 'moment-range';
 
 if (process.env.NODE_ENV === 'development' && module && module.hot) {
@@ -49,6 +52,8 @@ class Root extends React.Component {
 
   init() {
     moment.locale('zh-CN');
+    const sentryUrl = _.get(DI.get('config'), 'configs.sentry.url');
+    Raven.config(sentryUrl).install();
     const { configs, navigationConfig } = this.props;
     DI.get('config').setConfigs(configs);
     DI.get('navigation')

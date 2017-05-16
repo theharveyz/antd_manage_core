@@ -39,15 +39,8 @@ export default class MyTask extends React.Component {
     });
   }
 
-  onDownload(id) {
-    DI.get('excelHttp')
-      .get(id)
-      .then((url) => {
-        window.open(url);
-      })
-      .catch(() => {
-        message.error('下载失败!');
-      });
+  onDownload(record) {
+    DI.get('myTask').download(record);
   }
 
   columns = [
@@ -97,7 +90,7 @@ export default class MyTask extends React.Component {
       render: (record) => {
         if (record.status === 'completed') {
           return (
-            <a onClick={() => this.onDownload(record.mq_id)} >
+            <a onClick={() => this.onDownload(record)} >
               下载
             </a>
           )

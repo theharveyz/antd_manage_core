@@ -230,7 +230,6 @@ class ConditionEditor extends React.Component {
       } else {
         conditions = arrayToStateConditions(this.parseInputConditions(inputConditions), this);
       }
-
       this.setState({
         conditions
       });
