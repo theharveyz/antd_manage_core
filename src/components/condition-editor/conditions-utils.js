@@ -383,7 +383,6 @@ export const conditionsToQueryString = (conditions, userConditions) => {
 };
 
 export const checkItem = (item, editor) => {
-  // debugger;
   if (!_.isPlainObject(item)) {
     throw new Error('item 必须为对象');
   }
@@ -415,9 +414,9 @@ export const checkItem = (item, editor) => {
   }
 
   if (
-      item.operation === OPERATION_FIELD
-      && !fieldConfigs[item.operationValue]
-      && !userFieldConfigs[item.operationValue]
+    item.operation === OPERATION_FIELD
+    && !fieldConfigs[item.operationValue]
+    && !userFieldConfigs[item.operationValue]
   ) {
     throw new Error(`operationValue的值${item.operationValue}在fieldConfigs 和 userFieldConfigs 里不存在!`);
   }
