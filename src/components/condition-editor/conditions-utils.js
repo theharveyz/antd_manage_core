@@ -226,7 +226,7 @@ export const generateConditionByKey = (key, editor, type, isUserCondition) => {
       if (isUserCondition) {
         targetCondition = getCondition(uuid, userConditions).condition;
       } else {
-        targetCondition = getCondition(uuid, userConditions).condition;
+        targetCondition = getCondition(uuid, conditions).condition;
       }
       if (predicate === $IS_NOT_NULL || predicate === $IS_NULL) {
         targetCondition.value = undefined;
