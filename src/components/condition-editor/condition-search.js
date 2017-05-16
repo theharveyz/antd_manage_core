@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Button, Card, Modal, Col } from 'antd';
+import { Row, Button, Card, Modal, Col, Icon } from 'antd';
 import {
   checkInputConditions,
   arrayToStateConditions,
@@ -49,7 +49,8 @@ class ConditionSearch extends React.Component {
     conditions: [],
     userConditions: [],
     advancedConditions: [],
-    visible: false
+    visible: false,
+    userSectionToggle: false
   };
 
   componentWillMount() {
@@ -160,6 +161,11 @@ class ConditionSearch extends React.Component {
     });
   }
 
+  onToggleIcon() {
+    this.setState({
+      userSectionToggle: !this.state.userSectionToggle
+    });
+  }
   setConditions(conditions, userConditions) {
     const { realTime } = this.props;
     let emitCondition = true;
@@ -266,10 +272,22 @@ class ConditionSearch extends React.Component {
   )
 
   render() {
-    const { conditions, visible, advancedConditions, userConditions } = this.state;
+    const { conditions, visible, advancedConditions, userConditions, userSectionToggle } = this.state;
     const { fieldConfigs, userFieldConfigs, shortcutConfigs, actionConfigs, name, realTime, advanced } = this.props;
     const conditionEditorWidth = '80%';
     let components, userConditionsComponents, searchInputCoponent;
+    let toggleIcon, userSectionClassName;
+    if (userSectionToggle) {
+      toggleIcon = <Icon
+          type="up-circle-o"
+          className={`${styles.toggleIcon} ${styles.toggleIconActive}`}
+          onClick={::this.onToggleIcon}
+      />;
+      userSectionClassName = '';
+    } else {
+      toggleIcon = <Icon type="down-circle-o" className={styles.toggleIcon}  onClick={::this.onToggleIcon} />;
+      userSectionClassName = styles.userSearchToggle;
+    }
     if (advancedConditions.length) {
       const parsedAdvancedConditions = arrayToStateConditions(
         advancedConditions, this
@@ -293,9 +311,10 @@ class ConditionSearch extends React.Component {
               <div className={styles.userSearchTitle}>
                 用户维度
               </div>
-              <Row className={styles.forms} gutter={16} >
-                  {userConditionsComponents}
+              <Row className={`${styles.forms} ${userSectionClassName}`} gutter={16} >
+                {userConditionsComponents}
               </Row>
+              {toggleIcon}
             </section>
           </div>
         );
