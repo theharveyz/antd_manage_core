@@ -2,6 +2,8 @@ import { injectable } from '../decorators';
 import DI from '../di';
 import { message } from 'antd';
 
+import { datetimeFormat } from '../utils/common';
+
 @injectable()
 export default class MyTask {
 
@@ -26,5 +28,13 @@ export default class MyTask {
     .catch(() => {
       message.error('下载失败!');
     });
+  }
+
+  formatCreatedAt(record) {
+    return datetimeFormat(record.created_at);
+  }
+
+  formatUpdatedAt(record) {
+    return datetimeFormat(record.updated_at);
   }
 }
