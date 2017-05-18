@@ -4,7 +4,7 @@ import _ from 'lodash';
 import GoogleMaterialIcon from '../google-material-icon/google-material-icon';
 import Table from '../table/table';
 import DI from '../../di';
-import { datetimeFormat, humanizeByColorName } from '../../utils/common';
+import { humanizeByColorName } from '../../utils/common';
 
 export default class MyTask extends React.Component {
 
@@ -75,13 +75,13 @@ export default class MyTask extends React.Component {
       title: '创建时间',
       dataIndex: 'created_at',
       show: true,
-      render: datetimeFormat
+      render: (value, record) => DI.get('myTask').formatCreatedAt(record)
     },
     {
       title: '更新时间',
       dataIndex: 'updated_at',
       show: true,
-      render: datetimeFormat
+      render: (value, record) => DI.get('myTask').formatUpdatedAt(record)
     },
     {
       title: '操作',
