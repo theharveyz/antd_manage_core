@@ -28,4 +28,4 @@ export PermissionResource from './permission-resource/permission-resource';
 export PermissionRole from './permission-role/permission-role';
 export PermissionAdministrator from
   './permission-administrator/permission-administrator';
-
+export JSONPreview from './json-preview/json-preview';
