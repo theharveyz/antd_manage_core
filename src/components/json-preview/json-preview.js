@@ -47,8 +47,8 @@ export default class JSONPreview extends React.Component {
   render() {
     const { jsonString, json } = this.props;
     return (
-      <div className={styles.previewBox}>
-        <pre dangerouslySetInnerHTML={this.getInnerContent(jsonString || json)} className={styles.preview}>
+      <div className="jsonPreviewBox">
+        <pre dangerouslySetInnerHTML={this.getInnerContent(jsonString || json)} className="previewStyle">
         </pre>
       </div>
     );
