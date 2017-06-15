@@ -2,6 +2,12 @@
 
 # ChangeLog
 
+### v1.1.21
+* 全局化 JSONPrview 组件样式名称，以便外部覆盖
+* 修复高级搜索 bug
+* 对外暴露 ConditionJson 组件
+* formatConditionQuery 新增第三个参数，暴露原始已生成的 query
+
 ### v1.1.20
 * 新增 JSONPrview 组件
 

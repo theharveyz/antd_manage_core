@@ -82,6 +82,7 @@ class ConditionSearch extends React.Component {
     const advancedConditions = _.cloneDeep(conditionsToResult(
       this.refs.conditionEditor.state.conditions
     ));
+
     this.setState({
       visible: false,
       advancedConditions
@@ -95,7 +96,6 @@ class ConditionSearch extends React.Component {
   onSearchProxy() {
     const { onSearch } = this.props;
     const { conditions, advancedConditions, userConditions } = this.state;
-
     const emitConditions = advancedConditions.length
       ? advancedConditions : conditionsToResult(conditions);
 
