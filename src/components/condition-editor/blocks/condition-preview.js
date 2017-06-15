@@ -68,7 +68,9 @@ class ConditionPreview extends React.Component {
   parseConditions(conditions) {
     let items = [];
     let i = 0;
-
+    if (!conditions) {
+      return null;
+    }
     const l = conditions.length - 1;
 
     for (; i < l; i++) {
@@ -117,12 +119,16 @@ class ConditionPreview extends React.Component {
   }
 
   showConditionsBlock(conditions, type) {
+
     const { format } = this.props;
     let formatClassName;
     if (format) {
         formatClassName = styles.format;
     }
     let items = this.parseConditions(conditions);
+    if (!items) {
+      return null;
+    }
     const len = items.length;
     let title = '基础维度';
     if (len === 0) {
@@ -143,10 +149,14 @@ class ConditionPreview extends React.Component {
 
   render() {
     const { conditions, userConditions } = this.props;
+    let userConditionsBlock = null;
+    if (userConditions) {
+      userConditionsBlock = this.showConditionsBlock(userConditions, 'user');
+    }
     return (
       <div>
         {this.showConditionsBlock(conditions, 'basic')}
-        {this.showConditionsBlock(userConditions, 'user')}
+        { userConditionsBlock }
       </div>
     );
   }
