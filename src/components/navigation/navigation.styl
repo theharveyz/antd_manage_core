@@ -19,23 +19,38 @@
   }
 
   .toggleDiv {
-    height 20px;
+    opacity: 0;
+    border-radius : 0 8px 8px 0;
+    background-color : #ecf6fd;
+    height 80px;
     cursor pointer;
+    width : 10px;
+    position: fixed;
+    top: 400px;
+    left: 220px;
+    transition: visibility 0s, opacity 0.5s linear;
   }
-
   .toggleIcon {
-    position absolute
-    right 15px
-    top: 5px
-    z-index 100
-    &.toggled {
-      right 5px
-    }
+    margin-top : 35px;
+    color : #108ee9;
+    font-size: 10px;
   }
   &.toggle {
-    width 20px !important;
+    width 0px !important;
+    .toggleDiv {
+      left: 0px;
+      opacity: 1;
+    }
     :global(.ant-menu-inline) {
       opacity 0;
     }
   }
+  &:hover{
+    .toggleDiv {
+      opacity: 1;
+    }
+  }
+}
+.container::-webkit-scrollbar {
+  display: none;
 }

@@ -154,7 +154,7 @@ class Navigation extends React.Component {
       <aside className={ toggle ? `${styles.container} ${styles.toggle}` : styles.container } >
         <div className={styles.toggleDiv} onClick={::this.toggleNavigation}>
           <Icon
-            type={ iconToggle ? 'double-right' : 'double-left' }
+            type={ iconToggle ? 'caret-right' : 'caret-left' }
             className={ iconToggle ? `${styles.toggleIcon} ${styles.toggled}` : styles.toggleIcon}
           />
         </div>
