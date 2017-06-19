@@ -8,6 +8,8 @@ import TableToExcel from '../table-to-excel/table-to-excel';
 import _ from 'lodash';
 import styles from './table.styl';
 import AlertError from '../alert-error/alert-error';
+import OfflineStorge from '../../services/offline-storge';
+import DI from '../../di';
 const AntdTable = antd.Table;
 const Card = antd.Card;
 const Icon = antd.Icon;
@@ -48,10 +50,29 @@ class Table extends React.Component {
     dataLoadErrorMessage: '数据加载失败,点击重新更新...'
   };
 
+  init() {
+    const { tableColumnManageConfigs } = this.props;
+    const { name } = tableColumnManageConfigs;
+    return new Promise((resolve, reject) => {
+      this.offlineStorge = new OfflineStorge(
+        DI.get('config').get('core.table.configStorageName'));
+      this.offlineStorge.get(name).then((offlineConfigs) => {
+        this.offlineConfigs = offlineConfigs;
+        if (this.offlineConfigs && this.offlineConfigs.pageSize) {
+          this.setState({ query: generateQuery({ pagination: { pageSize: this.offlineConfigs.pageSize } }) }, resolve);
+        } else {
+          resolve();
+        }
+      });
+    })
+  }
+
   componentDidMount() {
-    if (!this.props.conditionSearch) {
-      this.fetchData();
-    }
+    this.init().then(() => {
+      if (!this.props.conditionSearch) {
+        this.fetchData();
+      }
+    });
   }
 
   onColumnsChange(e) {
@@ -61,21 +82,23 @@ class Table extends React.Component {
   }
 
   onSearch(e) {
-    const { query } = this.state;
-    query.offset = 0;
+    this.init().then(() => {
+      const { query } = this.state;
+      query.offset = 0;
 
-    const conditionQuery = this.generateConditionQueryString(e.value.conditionQuery, e.value.conditionResult);
-    const userConditionQuery = this.generateConditionQueryString(
-      e.value.userConditionQuery,
-      e.value.userConditionResult,
-      'userConditions'
-    );
-    const queryString = this.generateQueryString(conditionQuery, userConditionQuery);
-    this.setState({
-      queryString,
-      query
-    }, () => {
-      this.fetchData();
+      const conditionQuery = this.generateConditionQueryString(e.value.conditionQuery, e.value.conditionResult);
+      const userConditionQuery = this.generateConditionQueryString(
+        e.value.userConditionQuery,
+        e.value.userConditionResult,
+        'userConditions'
+      );
+      const queryString = this.generateQueryString(conditionQuery, userConditionQuery);
+      this.setState({
+        queryString,
+        query
+      }, () => {
+        this.fetchData();
+      });
     });
   }
 
@@ -150,6 +173,9 @@ class Table extends React.Component {
   }
 
   handleTableChange(pagination, filters, sorter) {
+    const { tableColumnManageConfigs } = this.props;
+    const { name } = tableColumnManageConfigs;
+    this.offlineStorge.add(name, { pageSize: pagination.pageSize });
     const { formatSorter } = this.props;
     let sorterQuery = sorter;
     if (_.isFunction(formatSorter)) {
@@ -162,7 +188,7 @@ class Table extends React.Component {
     });
   }
 
-  qsFormatSearchQuery (queryObj, queryKey) {
+  qsFormatSearchQuery(queryObj, queryKey) {
     return `${queryKey}=${encodeURIComponent(qs.stringify({ conditions: queryObj }))}`;
   }
 
@@ -185,7 +211,7 @@ class Table extends React.Component {
       exportExcelLimit
     } = this.props;
 
-    let { tableProps }= this.props;
+    let { tableProps } = this.props;
 
     let tableToExcelComponent = null;
 
@@ -211,8 +237,8 @@ class Table extends React.Component {
           onColumnsChange={::this.onColumnsChange}
         />
         {tableToExcelComponent}
-        <a className={styles.reload} onClick={() => this.fetchData()} >
-          <Icon type="reload" />
+        <a className={styles.reload} onClick={() => this.fetchData()}>
+          <Icon type="reload"/>
         </a>
       </div>
     );
@@ -234,18 +260,18 @@ class Table extends React.Component {
     }
 
     if (data.length === 0) {
-      tableProps= _.omit(tableProps, 'expandedRowRender');
+      tableProps = _.omit(tableProps, 'expandedRowRender');
     }
 
     return (
-      <div className={styles.container} >
+      <div className={styles.container}>
         {conditionSearchComponent}
         <AlertError
           message={this.state.dataLoadErrorMessage}
           onClick={() => this.fetchData()}
           visible={dataLoadError}
         />
-        <Card title={cardTitle} extra={tableColumnManageComponent} className={styles.card} >
+        <Card title={cardTitle} extra={tableColumnManageComponent} className={styles.card}>
           <AntdTable
             loading={dataLoading}
             columns={filterColumns}
@@ -269,7 +295,8 @@ Table.defaultProps = {
   exportExcelLimit: 30000,
   handleFetchOptions: (v) => v,
   handleExportExcelOptions: (v) => v,
-  exportExcelMethodName: 'addTableToExcelTask'
+  exportExcelMethodName: 'addTableToExcelTask',
+  pageSizeChanger: true
 };
 
 export default Table;
