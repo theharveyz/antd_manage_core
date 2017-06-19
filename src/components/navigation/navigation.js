@@ -127,11 +127,9 @@ class Navigation extends React.Component {
   }
 
   toggleIconType(toggle) {
-    setTimeout(() => {
-        this.setState({
-            iconToggle: !toggle
-        });
-    }, 500); // make icon change after 0.5s to compatible with css
+    this.setState({
+      iconToggle: !toggle
+    });
   }
 
   toggleNavigation() {
