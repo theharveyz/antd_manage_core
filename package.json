@@ -1,6 +1,6 @@
 {
   "name": "antd_manage_core",
-  "version": "1.1.23",
+  "version": "1.1.24",
   "description": "",
   "main": "src/index.js",
   "scripts": {
