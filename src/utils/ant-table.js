@@ -37,7 +37,7 @@ export const generatePagination = (pagination = {}, pageSizeChanger = false) => 
   const total = pagination.total || 0;
   const current = (pagination.offset / pagination.limit + 1) || 1;
   const showSizeChanger = pageSizeChanger;
-  const pageSizeOptions = showSizeChanger ? ['5', '10', '20', '30'] : [];
+  const pageSizeOptions = showSizeChanger ? ['20', '50', '100', '200'] : [];
   return _.merge({}, DI.get('config').get('core.pagination'), {
     total,
     showSizeChanger,
