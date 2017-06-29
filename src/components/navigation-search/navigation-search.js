@@ -51,10 +51,11 @@ export default class NavigationSearch extends React.Component {
   getAllNavigation(configs, title) {
     _.map(configs, (c) => {
       const nextTitle = title ? `${title}-${c.name}` : c.name;
+      if (c.component && c.path) {
+        this.nav.push({ ...c, title: nextTitle });
+      }
       if (c.child) {
         this.getAllNavigation(c.child, nextTitle);
-      } else {
-        this.nav.push({ ...c, title: nextTitle });
       }
     })
   }
