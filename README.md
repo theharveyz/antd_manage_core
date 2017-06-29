@@ -1,6 +1,9 @@
 # antd_manage_core
 
 # ChangeLog
+### v1.1.25
+* 新增message组件 配置error显示时间
+* 修复全局导航搜索bug
 
 ### v1.1.24
 * 表格组件增加页数选项 默认 [20 0 100 200]
