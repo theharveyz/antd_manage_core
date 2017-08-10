@@ -25,7 +25,7 @@ export default class NavigationSearch extends React.Component {
   processNavigation(configs) {
     this.getAllNavigation(configs);
     const searchableNav = _.filter(this.nav, (n) => {
-      return (n.path.indexOf('/:') < 0) && (n.title.indexOf('贝米钱包') < 0)
+      return (n.path.indexOf('/:') < 0) && (n.title.indexOf('首页') < 0)
     })
     const configGroup = {};
     _.map(searchableNav, (nav) => {
