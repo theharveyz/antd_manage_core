@@ -1,6 +1,13 @@
 # antd_manage_core
 
 # ChangeLog
+### v1.1.27
+* 添加 Editor 组件
+    * 属性
+    * placeholder string
+    * toolbars array 显示的工具
+    * qiniuToken object { token bucketUrl } 七牛上传token和bucketUrl 
+
 ### v1.1.25
 * 新增message组件 配置error显示时间
 * 修复全局导航搜索bug
