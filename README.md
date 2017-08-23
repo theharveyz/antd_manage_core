@@ -1,6 +1,10 @@
 # antd_manage_core
 
 # ChangeLog
+### v1.1.30
+* 更新密码找回样式
+* 修复编辑器bug
+
 ### v1.1.29
 * 新增密码找回功能
 
