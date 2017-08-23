@@ -117,7 +117,6 @@ export default class Editor extends React.Component {
     if (file && file.status === 'done') {
       const image = `${bucketUrl}/${file.response.key}`;
       this.ue.execCommand('inserthtml', `<image src="${image}" />`);
-      message.error('lala');
     }
     if (file && file.status === 'error') {
       message.error(`上传失败 请刷新页面后重试 ${file.error}`);
