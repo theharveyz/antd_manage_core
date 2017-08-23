@@ -1,6 +1,9 @@
 # antd_manage_core
 
 # ChangeLog
+### v1.1.28
+* 新增密码找回功能
+
 ### v1.1.27
 * 添加 Editor 组件
     * 属性

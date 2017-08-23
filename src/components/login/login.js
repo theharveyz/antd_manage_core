@@ -9,6 +9,7 @@ import {
 } from 'antd';
 import _ from 'lodash';
 import styles from './login.styl';
+import Reset from './reset';
 const FormItem = Form.Item;
 
 @Form.create()
@@ -28,7 +29,8 @@ export default class Login extends React.Component {
 
   state = {
     loading: false,
-    inputCodeMode: false
+    inputCodeMode: false,
+    reset: false
   };
 
   handleSubmit(e) {
@@ -84,11 +86,20 @@ export default class Login extends React.Component {
     });
   }
 
+  showReset() {
+    this.setState({ reset: true });
+  }
+
+  showLogin() {
+    this.setState({ reset: false });
+  }
+
   render() {
     const { form, modal } = this.props;
     const getFieldDecorator = form.getFieldDecorator;
-    const { loading, inputCodeMode } = this.state;
+    const { loading, inputCodeMode, reset } = this.state;
     const logoUrl = DI.get('config').get('manage.logo');
+    const showReset = DI.get('config').get('manage.resetPassword');
     const inputNumberStyle = { width: '105px' };
     let codeComponent;
 
@@ -134,53 +145,59 @@ export default class Login extends React.Component {
         <div className={styles.logo} >
           <img role="presentation" width="150" src={logoUrl} />
         </div>
-        <Form layout={'horizontal'} onSubmit={::this.handleSubmit} >
-          <FormItem
-            {...formItemLayout}
-            label="手机号："
-          >
-            {getFieldDecorator('mobile', {
-              rules: [
-                {
-                  required: true,
-                  message: '手机号必须填写'
-                }
-              ]
-            })(
-              <Input
-                type="text"
-                placeholder="请输入手机号"
-                disabled={inputCodeMode}
-              />
-            )}
-          </FormItem>
-          <FormItem
-            label="密码："
-            {...formItemLayout}
-          >
-            {getFieldDecorator('password', {
-              rules: [
-                {
-                  required: true,
-                  message: '密码必须填写'
-                }
-              ]
-            })(
-              <Input
-                disabled={inputCodeMode}
-                type="password"
-                placeholder="请输入密码"
-              />
-            )}
-          </FormItem>
-          {codeComponent}
-          <FormItem className={styles.button} style={{ marginTop: 24 }} >
-            <Button type="primary" htmlType="submit" loading={loading} >
-              {inputCodeMode ? '验证' : '登陆'}
-            </Button>
-          </FormItem>
-        </Form>
-        {modalTips}
+        {!reset ? <div>
+          <Form layout={'horizontal'} onSubmit={::this.handleSubmit} >
+            <FormItem
+              {...formItemLayout}
+              label="手机号："
+            >
+              {getFieldDecorator('mobile', {
+                rules: [
+                  {
+                    required: true,
+                    message: '手机号必须填写'
+                  }
+                ]
+              })(
+                <Input
+                  type="text"
+                  placeholder="请输入手机号"
+                  disabled={inputCodeMode}
+                />
+              )}
+            </FormItem>
+            <FormItem
+              label="密码："
+              {...formItemLayout}
+            >
+              {getFieldDecorator('password', {
+                rules: [
+                  {
+                    required: true,
+                    message: '密码必须填写'
+                  }
+                ]
+              })(
+                <Input
+                  disabled={inputCodeMode}
+                  type="password"
+                  placeholder="请输入密码"
+                />
+              )}
+            </FormItem>
+            {codeComponent}
+            <FormItem className={styles.button} style={{ marginTop: 24 }} >
+              <Button type="primary" htmlType="submit" loading={loading} >
+                {inputCodeMode ? '验证' : '登陆'}
+              </Button>
+            </FormItem>
+          </Form>
+          {modalTips}
+          {showReset && <a className={styles.resetLink} onClick={::this.showReset}>忘记密码?</a>}
+        </div>
+        : <Reset
+            showLogin={::this.showLogin}
+          />}
       </div>
     );
   }
