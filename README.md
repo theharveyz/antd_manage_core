@@ -1,7 +1,7 @@
 # antd_manage_core
 
 # ChangeLog
-### v1.1.28
+### v1.1.29
 * 新增密码找回功能
 
 ### v1.1.27
