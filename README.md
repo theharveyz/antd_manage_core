@@ -31,13 +31,13 @@
 * 优化导航栏折叠
 
 ### v1.1.21
-* 全局化 JSONPrview 组件样式名称，以便外部覆盖
+* 全局化 JSONPreview 组件样式名称，以便外部覆盖
 * 修复高级搜索 bug
 * 对外暴露 ConditionJson 组件
 * formatConditionQuery 新增第三个参数，暴露原始已生成的 query
 
 ### v1.1.20
-* 新增 JSONPrview 组件
+* 新增 JSONPreview 组件
 
 ### v1.1.19
 * 支持自定义任务中心的日期
