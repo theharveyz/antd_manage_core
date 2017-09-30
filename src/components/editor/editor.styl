@@ -1,0 +1,30 @@
+.editor {
+  padding: 1px;
+  border: 1px solid #FFF;
+  line-height: auto;
+  position : relative;
+  .main {
+    :global(.edui-editor) {
+      width: 100% !important;
+    }
+    :global(.edui-toolbar) {
+      margin-left: 50px;
+    }
+  }
+  .tool {
+    position : absolute;
+    margin-top: 3px;
+    margin-left : 3px;
+    top: 0;
+    left: 0;
+  }
+}
+
+:global(.has-error .core-editor) {
+  border-color: #f04134;
+  border-radius: 4px;
+}
+
+:global(.ant-form-item-control) {
+  line-height: 22px;
+}

@@ -1,6 +1,20 @@
 # antd_manage_core
 
 # ChangeLog
+### v1.1.30
+* 更新密码找回样式
+* 修复编辑器bug
+
+### v1.1.29
+* 新增密码找回功能
+
+### v1.1.27
+* 添加 Editor 组件
+    * 属性
+    * placeholder string
+    * toolbars array 显示的工具
+    * qiniuToken object { token bucketUrl } 七牛上传token和bucketUrl 
+
 ### v1.1.25
 * 新增message组件 配置error显示时间
 * 修复全局导航搜索bug
@@ -17,13 +31,13 @@
 * 优化导航栏折叠
 
 ### v1.1.21
-* 全局化 JSONPrview 组件样式名称，以便外部覆盖
+* 全局化 JSONPreview 组件样式名称，以便外部覆盖
 * 修复高级搜索 bug
 * 对外暴露 ConditionJson 组件
 * formatConditionQuery 新增第三个参数，暴露原始已生成的 query
 
 ### v1.1.20
-* 新增 JSONPrview 组件
+* 新增 JSONPreview 组件
 
 ### v1.1.19
 * 支持自定义任务中心的日期

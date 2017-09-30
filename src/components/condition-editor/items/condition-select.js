@@ -98,7 +98,7 @@ class ConditionSelect extends React.Component {
             defaultValue={value}
           >
             {_.map(values, (item) => (
-              <Option key={item.value} value={item.value} >{item.name}</Option>
+              <Option key={`${item.name}-${item.value}`} value={item.value} >{item.name}</Option>
             ))}
           </Select>
         </FormItem>
